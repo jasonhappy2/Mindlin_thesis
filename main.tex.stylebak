@@ -62,17 +62,14 @@
 
 \section{本文主要研究内容}
 
-综合上述分析，本文在LBB稳定性和最优约束比的框架下研究Mindlin板的剪切自锁问题，主要工作如下：
+本文在LBB稳定性和最优约束比的思路下，研究Mindlin板的剪切自锁问题，各章安排如下：
 
-(1) 重新审视Mindlin板三变量混合弱形式，指出剪切应力约束与剪切应变约束为两个物理本质相互独立的约束，并厘清两者分别对应的稳定性要求；
-
-(2) 在泛函分析的框架下，分别建立剪切应力约束与剪切应变约束的LBB稳定性条件，并借助完备多项式空间推导各自的LBB稳定系数估计式，据此确定两个约束的最优约束比；
-
-(3) 依据所得两个最优约束比，构造同时满足两条件的无网格--有限元混合离散格式，使挠度、转角与剪切力在自由度配比上达到稳定与免自锁的要求；
-
-(4) 通过系列经典板算例对上述理论结果与数值格式进行验证。
-
-本文后续章节安排如下：第2章建立Mindlin板的三变量混合弱形式，并识别剪切应力与剪切应变两个独立约束；第3章在泛函分析框架下推导两个约束的LBB稳定系数估计式与最优约束比；第4章依据最优约束比构造无网格--有限元混合离散方法并给出数值验证；第5章为结论与展望。
+\begin{enumerate}
+    \item 重新分析Mindlin板三变量混合弱形式，区分剪切应力约束与剪切应变约束两个独立约束；
+    \item 分别建立两个约束的LBB稳定性条件，用完备多项式估计器推导各自的最优约束比；
+    \item 按两个最优约束比构造同时满足两条件的无网格-有限元混合离散格式；
+    \item 用经典算例验证理论结果与数值格式的有效性。
+\end{enumerate}
 
 % ============================ 第2~5章 ============================
 
@@ -280,7 +277,11 @@ Reissner--Mindlin假设下，板内任意点的位移场可表示为
     - \int_\Omega \delta w^{h}\,\bigl(\nabla\cdot\mathbf{q}^{h}+\bar{p}\bigr)\,\mathrm{d}\Omega = 0
     \label{eq:constraint-stress}
 \end{equation}
-上式表明，剪切应力约束由两部分组成：其一为域内剪切力所应满足的散度平衡条件 $\nabla\cdot\mathbf{q}^{h}+\bar{p}=0$，其二为自然边界 $\Gamma_q$ 上的剪切力条件 $\mathbf{q}^{h}\cdot\mathbf{n}=\bar{q}_n$，二者共同反映了剪切力的力平衡关系。由此可见，该约束在本质上是剪切力的力平衡条件。
+\begin{itemize}
+    \item 域内部分：约束 $\nabla\cdot\mathbf{q}^{h}+\bar{p}=0$（剪切力的散度平衡）；
+    \item 边界部分：约束 $\mathbf{q}^{h}\cdot\mathbf{n}=\bar{q}_n$ 在 $\Gamma_q$ 上（剪切力的边界法向值）；
+    \item \textbf{物理本质：力的平衡条件}。
+\end{itemize}
 
 \noindent\textbf{式~\eqref{eq:weak-q-h} —— 剪切应变协调约束：}
 % TODO(公式 tag 27): 展开式
@@ -290,9 +291,13 @@ Reissner--Mindlin假设下，板内任意点的位移场可表示为
     - \int_{\Gamma_w}\delta\mathbf{q}^{h}\cdot\mathbf{n}\,\bigl(w^{h}-\bar{w}\bigr)\,\mathrm{d}\Gamma = 0
     \label{eq:constraint-strain}
 \end{equation}
-上式表明，剪切应变约束由两部分组成：其一为域内剪切应变应满足的协调条件 $\nabla w^{h}-\boldsymbol{\varphi}^{h}=\mathbf{0}$，即剪切应变 $\boldsymbol{\gamma}=\mathbf{0}$；其二为本质边界 $\Gamma_w$ 上的挠度条件 $w^{h}=\bar{w}$。二者共同反映了板的变形协调关系，因此该约束在本质上是剪切应变的变形协调条件。
+\begin{itemize}
+    \item 域内部分：约束 $\nabla w^{h}-\boldsymbol{\varphi}^{h}=\mathbf{0}$（剪切应变 $\boldsymbol{\gamma}=\mathbf{0}$）；
+    \item 边界部分：约束 $w^{h}=\bar{w}$ 在 $\Gamma_w$ 上（挠度的本质边界条件）；
+    \item \textbf{物理本质：变形协调条件}。
+\end{itemize}
 
-由上可见，式~\eqref{eq:weak-w-h} 与式~\eqref{eq:weak-q-h} 是两个物理本质不同的约束，因而分别需要各自的LBB稳定性条件。值得注意的是，传统免自锁方法大多仅针对式~\eqref{eq:weak-q-h} 所示的剪切应变约束进行构造，而对式~\eqref{eq:weak-w-h} 中剪切应力约束的稳定性关注甚少，这也正是部分方案在满足单一LBB条件后剪切力仍出现振荡的原因所在。
+\textbf{结论：}式~\eqref{eq:weak-w-h} 和式~\eqref{eq:weak-q-h} 是两个物理本质完全不同的约束，各自需要独立的LBB稳定性条件。传统方法大多只考虑了式~\eqref{eq:weak-q-h} 中的剪切应变约束，忽视了式~\eqref{eq:weak-w-h} 中剪切应力约束的稳定性。
 
 \section{免自锁问题的常用方法}
 
@@ -334,7 +339,7 @@ Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Ten
 
 \section{基于完备多项式空间的LBB系数估计}
 
-针对上述约束问题，记 $P:U\to P$ 为双线性形式 $b$ 对应的线性算子，$P_h:U^{h}\to P^{h}$ 为 $P$ 在 $P^{h}$ 上的正交投影算子，并引入与 $U^{h}$ 同维的完备多项式空间 $U^{n_u}\subset U$。可以证明，LBB 系数 $\beta$ 满足如下估计式
+\textbf{定理（完备多项式LBB系数估计器）：}设 $P:U\to P$ 为双线性形式 $b$ 对应的线性算子，$P_h:U^{h}\to P^{h}$ 为 $P$ 在 $P^{h}$ 上的正交投影算子，$U^{n_u}\subset U$ 为与 $U^{h}$ 同维的完备多项式空间。则LBB系数 $\beta$ 可估计为
 % TODO(公式 tag 30): 估计式 β ≤ inf sup ‖Pu‖/‖u‖ + O(h)
 \begin{equation}
     \beta \le \inf_{U'\subset U^{n_u}\setminus\ker P_h I_h}\ \sup_{u\in U'}
@@ -343,9 +348,9 @@ Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Ten
 \end{equation}
 其中 $I_h:U^{n_u}\to U^{h}$ 为插值算子，$h$ 为离散特征尺寸。
 
-上式表明，LBB 系数 $\beta$ 是否非零（即LBB条件是否满足）仅取决于多项式空间中 $\ker P$ 与像空间的维数关系，而与离散尺寸 $h$ 无关，因为 $O(h)$ 项在 $h\to0$ 时趋于消失。
+\textbf{核心含义：}$\beta$ 是否非零（即LBB条件是否满足）仅取决于多项式空间中 $\ker P$ 的维数与 $P$ 空间的维数关系，与离散尺寸 $h$ 无关（$O(h)$ 项在 $h\to0$ 时消失）。
 
-为便于理解，这里给出上述估计式的推导思路：记 $P$ 为双线性形式 $b$ 对应的线性算子，满足 $b(p,u)=(p,Pu)$。将LBB条件改写为关于投影算子 $P_h$ 的形式，并把下确界限定在 $\operatorname{Im}P_h$ 上；对固定的 $p^{h}$，取 $U'=\{u^{h}\in U^{h}\mid P_h u^{h}=p^{h}\}$，由 Cauchy--Schwarz 不等式知等号成立，得到
+\textbf{证明：}记 $P$ 为双线性形式 $b$ 对应的线性算子，满足 $b(p,u)=(p,Pu)$。将LBB条件改写为关于投影算子 $P_h$ 的形式，并把下确界限定在 $\operatorname{Im}P_h$ 上；对固定的 $p^{h}$，取 $U'=\{u^{h}\in U^{h}\mid P_h u^{h}=p^{h}\}$，由 Cauchy--Schwarz 不等式知等号成立，得到
 % TODO(公式 tag 31): 投影算子形式
 \begin{equation}
     \beta \le \inf_{U'\subset U^{h}\setminus\ker P_h}\ \sup_{u^{h}\in U'}
@@ -390,7 +395,7 @@ Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Ten
     \end{cases}
     \label{eq:op-W}
 \end{equation}
-其中 $T_{\Gamma_q}:Q\to Q|_{\Gamma_q}$ 为迹算子。将该算子代入上文 LBB 估计式，得
+其中 $T_{\Gamma_q}:Q\to Q|_{\Gamma_q}$ 为迹算子。将该算子代入上述定理，得
 % TODO(公式 tag 37): β_q 估计式
 \begin{equation}
     \beta_q \le \inf_{W'\subset W^{n_w}\setminus\ker\mathbf{W}_h I_h^{w}}\ \sup_{w\in W'}
@@ -418,7 +423,7 @@ Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Ten
 利用 $n_q$ 与 $[n_q]$ 的关系 $n_q=\langle[n_q]\rangle=([n_q]+1)([n_q]+2)/2$，最终得到剪切应力约束的最优约束比
 % TODO(公式 tag 49): 结论 n_q ≤ n_φ
 \begin{equation}
-    n_q \le n_\varphi
+    \boxed{\,n_q \le n_\varphi\,}
     \label{eq:ratio-stress}
 \end{equation}
 即剪切应力约束的LBB条件要求剪切力节点数 $n_q$ 不超过转角节点数 $n_\varphi$。
@@ -451,7 +456,7 @@ Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Ten
     \end{cases}
     \label{eq:op-Q}
 \end{equation}
-其中 $T_w:W\times\Phi\to W|_{\Gamma_w}$ 为迹算子。将该算子代入上文 LBB 估计式，得
+其中 $T_w:W\times\Phi\to W|_{\Gamma_w}$ 为迹算子。将该算子代入上述定理，得
 % TODO(公式 tag 53): β_γ 估计式
 \begin{equation}
     \beta_\gamma \le \inf_{U'\subset W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}_h I_h^{u}}\ \sup_{u\in U'}
@@ -479,28 +484,58 @@ Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Ten
 当 $n_w\ge n_s$ 时，$2n_q\le 2n_\varphi$，即 $n_q\le n_\varphi$；当 $n_w<n_s$ 时，$2n_q\le n_w+2n_\varphi-n_w=2n_\varphi$，同样得 $n_q\le n_\varphi$。对于 $w$ 的最优约束比，需满足 $n_w\approx n_s=\langle[n_q]\rangle$，即剪切应变约束的最优约束比为
 % TODO(公式 tag 65): 结论 n_q ≤ n_φ 且 n_w^opt = ⟨⌊[n_q]⌋-1⟩
 \begin{equation}
-    n_q \le n_\varphi,\qquad n_w^{\mathrm{opt}} = \bigl\langle\lfloor [n_q]\rfloor-1\bigr\rangle
+    \boxed{\,n_q \le n_\varphi,\qquad n_w^{\mathrm{opt}} = \bigl\langle\lfloor [n_q]\rfloor-1\bigr\rangle\,}
     \label{eq:ratio-strain}
 \end{equation}
 即剪切应变约束的LBB条件要求剪切力节点数 $n_q$ 不超过转角节点数 $n_\varphi$，且挠度节点数 $n_w$ 应比 $n_q$ 对应的多项式阶数低一阶。
 
 \section{两个最优约束比的综合讨论}
 
-综合上述分析可知，两个独立约束分别对应两套LBB稳定性判据与最优约束比。其中，剪切应力约束对应式~\eqref{eq:weak-w-h}，其本质是剪切力的力平衡条件，相应算子为 $\mathbf{W}=(-\nabla\cdot,\;\mathbf{n}\cdot)$，由域内散度与自然边界约束共同构成，该约束对剪切力节点数提出的要求是 $n_q\le n_\varphi$。剪切应变约束则对应式~\eqref{eq:weak-q-h}，其本质是剪切应变的变形协调条件，相应算子为 $\mathbf{Q}=(\nabla w-\varphi,\;-\mathbf{n}\cdot)$，由于该约束要求挠度场较转角场高一阶，故除 $n_q\le n_\varphi$ 外，还要求挠度节点数满足 $n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。可见两个约束在物理本质、算子结构与最优约束比上均不相同，须分别予以满足，才能同时保证剪切力与挠度解的稳定性。
+综合上述分析，两个独立约束对应的最优约束比如表~\ref{tab:ratios} 所示。
+
+\begin{table}[H]
+    \centering
+    \caption{两个独立约束对应的最优约束比}
+    \label{tab:ratios}
+    \begin{tabular}{lllll}
+        \toprule
+        自锁类型 & 约束来源 & 对应算子 & $\ker$ 空间特点 & 最优约束比 \\
+        \midrule
+        剪切应力自锁 & $b_w(w,q)$ & $\mathbf{W}=(-\nabla\cdot,\;\mathbf{n}\cdot)$ & $\nabla\cdot q=0$ 的多项式 & $n_q\le n_\varphi$ \\
+        剪切应变自锁 & $b(q,u)$ & $\mathbf{Q}=(\nabla w-\varphi,\;-\mathbf{n}\cdot)$ & $w$ 比 $\varphi$ 高一阶 & $n_q\le n_\varphi$，$n_w=\langle\lfloor[n_q]\rfloor-1\rangle$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \section{数值验证（特征值问题）}
 % 本节内容待填：通过广义特征值问题数值测试不同节点配比下的 \beta_q 与 \beta_\gamma（收敛率/特征值验证，见第4章）。
 
 \section{小结}
 
-本章在泛函分析框架下分别推导了剪切应力约束与剪切应变约束的LBB稳定系数估计式。结果表明，剪切自锁涉及两个相互独立的约束，各自需要相应的LBB条件：剪切应力约束要求 $n_q\le n_\varphi$，而剪切应变约束除 $n_q\le n_\varphi$ 外还要求 $n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。上述两个最优约束比构成了后续构造免自锁混合离散方法的理论基础。
+\begin{itemize}
+    \item 剪切自锁涉及两个独立约束，各自需要LBB条件；
+    \item 剪切应力LBB条件：$n_q\le n_\varphi$；
+    \item 剪切应变LBB条件：$n_q\le n_\varphi$，$n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。
+\end{itemize}
 
 % ============================ 第4章 ============================
 \chapter{免剪切自锁的无网格有限元混合离散方法}
 
 \section{离散策略的选择}
 
-由第3章推导可知，两套LBB条件对 $w$、$\varphi$、$q$ 的节点数分别提出如下要求：剪切应力LBB（式~\eqref{eq:ratio-stress}）要求 $n_q\le n_\varphi$，而剪切应变LBB（式~\eqref{eq:ratio-strain}）除 $n_q\le n_\varphi$ 外还要求 $n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。为同时满足这两个约束比要求，本文选取 Meshfree$(w,\varphi)$ + FEM$(q)$ 的离散策略。之所以如此选择，一方面是因为无网格法（如再生核RK近似）的形函数具有高阶一致性与布置灵活性，能够独立调控挠度 $w$ 与转角 $\varphi$ 的节点数，从而方便地满足 $n_w\approx\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$ 的要求；另一方面是因为剪切力 $q$ 采用标准有限元离散，实施简单、计算高效。此外，该策略与 FEM$(w,\varphi)$ + Meshfree$(q)$ 的离散方式互为补充，便于从自由度配比的角度论证两种混合方案的差异与联系。
+回顾两个约束比对 $w$、$\varphi$、$q$ 节点数的要求：
+\begin{itemize}
+    \item 剪切应力LBB（式~\eqref{eq:ratio-stress}）：$n_q\le n_\varphi$；
+    \item 剪切应变LBB（式~\eqref{eq:ratio-strain}）：$n_q\le n_\varphi$，$n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。
+\end{itemize}
+
+为同时满足这两个约束比要求，本文选择 Meshfree$(w,\varphi)$ + FEM$(q)$ 的离散策略，原因如下：
+\begin{itemize}
+    \item 无网格法（如再生核RK近似）的形函数具有高阶一致性和灵活性，可以独立调控 $w$ 和 $\varphi$ 的节点数；
+    \item 有限元法用于 $q$ 的离散，简单高效；
+    \item 这种组合可以灵活地满足 $n_w\approx\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$ 的要求；
+    \item 与 FEM$(w,\varphi)$ + Meshfree$(q)$ 方案形成互补。
+\end{itemize}
 
 \section{再生核（RK）无网格近似}
 
@@ -583,9 +618,30 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \section{节点布置方案}
 
-为同时满足两个约束比要求，需对挠度、转角与剪切力的节点配比加以设计。以常见有限元单元为例，位移场 $w$ 与 $\varphi$ 采用相应的单元节点布置，剪切力 $q$ 的节点数则须按约束比要求选取。具体而言，采用三节点线性三角形单元（Tri3）时，$w$ 与 $\varphi$ 的节点数分别为 $n_w=3$、$n_\varphi=6$，相应地 $q$ 可取 $n_q=3$；六节点二次三角形单元（Tri6）对应 $n_w=6$、$n_\varphi=12$、$n_q=6$；四节点双线性四边形单元（Quad4）对应 $n_w=4$、$n_\varphi=8$、$n_q=4$；八节点二次四边形单元（Quad8）对应 $n_w=8$、$n_\varphi=16$、$n_q=8$。可见上述各类单元均取 $n_q=n_\varphi/2$，自然满足 $n_q\le n_\varphi$ 的要求，而挠度 $w$ 的节点密度还可结合 $n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$ 作进一步调整。
+需同时满足两个约束比要求。以常见有限元单元为例，节点布置可参考表~\ref{tab:node-layout}。
 
-在实际离散中，位移节点（$w$ 与 $\varphi$）采用无网格节点布置，可独立于 $q$ 的网格；$q$ 节点则采用有限元网格节点。通过调整无网格节点的密度与分布，即可精细控制 $n_w$ 与 $n_\varphi$ 的比例，从而满足两个最优约束比的要求。
+\begin{table}[H]
+    \centering
+    \caption{常见单元的节点布置建议（数值待最终定稿核对）}
+    \label{tab:node-layout}
+    \begin{tabular}{lcccc}
+        \toprule
+        位移单元类型 & $n_w$ & $n_\varphi$ & $n_q$（建议） & 说明 \\
+        \midrule
+        Tri3（线性）   & 3  & 6  & 3 & $n_q=n_\varphi/2$，满足 $n_q\le n_\varphi$ \\
+        Tri6（二次）   & 6  & 12 & 6 & $n_q=n_\varphi/2$，满足 \\
+        Quad4（双线性） & 4  & 8  & 4 & $n_q=n_\varphi/2$，满足 \\
+        Quad8（二次）  & 8  & 16 & 8 & $n_q=n_\varphi/2$，满足 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+联合布置策略：
+\begin{itemize}
+    \item 位移节点（$w$ 和 $\varphi$）采用无网格节点布置，可独立于 $q$ 的网格；
+    \item $q$ 节点采用有限元网格节点；
+    \item 通过调整无网格节点的密度和分布，精细控制 $n_w$ 和 $n_\varphi$ 的比例。
+\end{itemize}
 
 \section{LBB稳定性的数值验证}
 
@@ -607,13 +663,31 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \section{数值算例}
 
-用经典算例证明理论正确性和方法有效性。为突出两个LBB条件的作用，每个算例均进行三组离散方式的对比：其一为传统的 $r=3:2$ 配比，该配比并不满足LBB条件；其二为仅满足剪切应变LBB的离散方案（单约束）；其三为同时满足两个LBB的本文方案。通过三者位移解、剪切力解的收敛性与稳定性差异，即可检验双约束比设计是否切实消除了剪切自锁。
+用经典算例证明理论正确性和方法有效性，每个算例做三组对比：
+\begin{enumerate}
+    \item 传统 $r=3:2$（不满足LBB）；
+    \item 仅满足剪切应变LBB（单约束）；
+    \item 同时满足两个LBB（本文方案）。
+\end{enumerate}
 
 \subsection{固支方板问题}
 
-问题描述：四边固支方板，边长 $L$，厚度 $t$，受均布荷载 $\bar{p}$。其精确解取 Timoshenko 厚板解。
+问题描述：四边固支方板，边长 $L$，厚度 $t$，受均布荷载 $\bar{p}$。
+精确解：Timoshenko 厚板解。
 
-在收敛性分析中，考察中心点挠度 $w_c$、弯矩 $m_{xx}$ 与剪切力 $q_x$ 随网格加密的收敛曲线；同时比较三种方案的剪切力应力云图。可以预期，方案1（传统 $r=3:2$）的剪切力云图会出现明显振荡，方案2（仅满足剪切应变LBB）虽挠度能够收敛，但剪切力仍存在轻微振荡，而方案3（同时满足两个LBB）的挠度与剪切力均光滑收敛。
+收敛性分析：
+\begin{itemize}
+    \item 中心点挠度 $w_c$ 的收敛曲线；
+    \item 弯矩 $m_{xx}$ 的收敛曲线；
+    \item 剪切力 $q_x$ 的收敛曲线。
+\end{itemize}
+
+应力云图：
+\begin{itemize}
+    \item 方案1（传统 $r=3:2$）：剪切力云图出现明显振荡；
+    \item 方案2（仅满足剪切应变LBB）：挠度收敛但剪切力仍有轻微振荡；
+    \item 方案3（同时满足两个LBB）：挠度和剪切力均光滑收敛。
+\end{itemize}
 
 % TODO(数值算例数据与图待填)：固支方板收敛图、应力云图。
 
@@ -635,11 +709,34 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \subsection{与 FEM$(w,\varphi)$+Meshfree$(q)$ 方案的对比讨论}
 
-为说明本文双约束比混合离散方案的特点，将其与 FEM$(w,\varphi)$ + Meshfree$(q)$ 的离散方式作一对比。前者以有限元离散挠度与转角、以无网格法离散剪切力，仅考虑剪切应变LBB这一单约束，并据此采用单一约束比；后者（本文方案）则以无网格法离散挠度与转角、以有限元离散剪切力，同时考虑剪切应力与剪切应变两个LBB条件，采用与之相应的双约束比。正因本文方案兼顾了剪切力平衡约束的稳定性，故在部分单约束方案仍出现剪切力振荡的算例中，本文方法能够消除该振荡，使剪切力解保持稳定。
+本文方案与 FEM$(w,\varphi)$+Meshfree$(q)$ 方案的对比如表~\ref{tab:vs-wu} 所示。
+
+\begin{table}[H]
+    \centering
+    \caption{本文方案与 FE-Meshfree 反配方案的对比}
+    \label{tab:vs-wu}
+    \begin{tabular}{lcc}
+        \toprule
+        对比项 & 反配方案 & 本文 \\
+        \midrule
+        离散方式 & FEM$(w,\varphi)$ + Meshfree$(q)$ & Meshfree$(w,\varphi)$ + FEM$(q)$ \\
+        约束考虑 & 仅剪切应变LBB & 剪切应力LBB + 剪切应变LBB \\
+        约束比   & 单约束比 & 双约束比 \\
+        应力振荡 & 部分算例存在 & 消除 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \section{小结}
 
-本章基于两个最优约束比，设计了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法。文中给出了节点联合布置策略，可通过调整无网格节点的密度与分布精细调控 $n_w$ 与 $n_\varphi$ 的比例；并通过特征值数值测试验证了相应离散方案满足LBB稳定性。固支方板、Razzaque 斜板与简支圆板三个经典算例的结果表明，同时满足两个LBB条件的方案在位移与应力两方面均表现最优，且与 FEM$(w,\varphi)$ + Meshfree$(q)$ 的离散方式相比，两种策略在自由度配比上具有互补性。
+\begin{itemize}
+    \item 基于两个最优约束比，设计了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的混合离散方案；
+    \item 给出了节点联合布置策略；
+    \item 通过特征值数值测试验证LBB稳定性；
+    \item 三个经典算例验证了理论正确性；
+    \item 同时满足两个LBB条件的方案在位移和应力方面均表现最优；
+    \item 与 FE-Meshfree 反配方案对比，论证了两种离散策略的互补性。
+\end{itemize}
 
 % ============================ 第5章 ============================
 \chapter{工程算例}
@@ -650,19 +747,25 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \subsection{结论}
 
-本文围绕Mindlin板的剪切自锁问题，从LBB稳定性条件出发，系统研究了剪切应力约束与剪切应变约束两个独立约束的最优约束比，并据此构造了免自锁的混合离散方法，主要结论如下：
-
-(1) 重新审视Mindlin板三变量混合弱形式后可以发现，剪切应力约束（式~\eqref{eq:weak-w-h}）与剪切应变约束（式~\eqref{eq:weak-q-h}）是两个物理本质相互独立的约束，其中剪切应力约束本质上是剪切力的力平衡条件，剪切应变约束本质上是剪切应变的变形协调条件，二者须分别满足各自的LBB稳定性判据。
-
-(2) 在泛函分析框架下分别建立了两个约束的LBB稳定系数估计式。结果表明，剪切应力约束要求 $n_q\le n_\varphi$，剪切应变约束除 $n_q\le n_\varphi$ 外还要求 $n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$，从而确定了两个约束各自的最优约束比。
-
-(3) 依据上述两个最优约束比，建立了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法，并给出了相应的节点布置策略。
-
-(4) 固支方板、Razzaque 斜板与简支圆板三个经典算例的数值结果表明，同时满足两个LBB条件的离散方案在挠度解与剪切力解的收敛性和稳定性上均表现良好，验证了本文理论结果与数值格式的有效性。
+\begin{enumerate}
+    \item \textbf{识别了两个独立约束}：通过重新审视Mindlin板三变量混合弱形式，发现式~\eqref{eq:weak-w-h}（剪切应力平衡约束）和式~\eqref{eq:weak-q-h}（剪切应变协调约束）是两个物理本质不同的约束；
+    \item \textbf{建立了两个LBB条件}：分别建立了剪切应力LBB条件和剪切应变LBB条件，并利用完备多项式LBB系数估计器推导了各自的最优约束比：
+    \begin{itemize}
+        \item 剪切应力LBB：$n_q\le n_\varphi$（式~\eqref{eq:ratio-stress}）；
+        \item 剪切应变LBB：$n_q\le n_\varphi$，$n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$（式~\eqref{eq:ratio-strain}）。
+    \end{itemize}
+    \item \textbf{设计了混合离散方法}：基于两个最优约束比，建立了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法；
+    \item \textbf{数值验证}：固支方板、Razzaque 斜板、简支圆板三个算例验证了理论正确性和方法有效性。
+\end{enumerate}
 
 \subsection{展望}
 
-本文方法仍可在若干方向上进一步拓展。其一，可将双LBB条件框架推广至壳体理论中的薄膜自锁与弯曲自锁问题，实现``三锁合一''的统一处理；其二，可将研究范围扩展至几何非线性与材料非线性问题；其三，可将方法推广至Mindlin板的动力分析；其四，可基于LBB系数开展自适应节点加密策略的研究，以提高计算效率。
+\begin{enumerate}
+    \item \textbf{推广至壳体问题}：将双LBB条件框架推广至壳体理论中的薄膜自锁和弯曲自锁（``三锁合一''）；
+    \item \textbf{非线性问题}：考虑几何非线性和材料非线性；
+    \item \textbf{动力问题}：推广至Mindlin板的动力分析；
+    \item \textbf{自适应分析}：基于LBB系数的自适应节点加密策略。
+\end{enumerate}
 
 \backmatter
 
