@@ -23,269 +23,751 @@
 }
 
 \mainmatter
-\chapter{前期准备}
-\section{封面关键字设置}
-\section{Git相关}
+
+% ============================ 正文从这里开始 ============================
+% 论文正文第1~5章全部写在 main.tex 内（不另开文件）。
+% 当前仅填写第1章（样板）。第2~5章留占位，待确认样板效果后再续写。
+
+\chapter{引言}
+
+\section{选题背景及意义}
+
+板壳结构在航空航天、船舶与海洋工程、土木建筑等领域应用广泛。数值分析中，Mindlin板理论（Reissner--Mindlin假设）同时计入弯曲变形与横向剪切变形，适用范围较Kirchhoff薄板理论更广，且有限元实现只需 $C^{0}$ 连续性，构造简便。但Mindlin板有限元存在一个困难：板厚变薄后，剪切应变项被过度约束，位移解明显偏小，这一现象称为剪切自锁（shear locking）。如何在薄板极限下保持计算精度，是Mindlin板有限元长期面对的问题。
+
+\section{国内外研究现状}
+
+\subsection{缩减积分与选择积分法}
+
+剪切自锁源于离散格式对剪切变形的过度约束，最早的一类方法便从放松该约束入手。Zienkiewicz等最早在板壳分析中系统阐述了均匀缩减积分，以降低积分阶次的方式减少剪切应变能项引起的过度约束。Hughes等进一步提出选择性缩减积分，仅对剪切项降阶，在Mindlin框架内恢复Kirchhoff约束；Prathap和Viswanath在四节点四边形单元上按方向分离积分，改善了约束控制。这类方法实施简单、计算量小，但其性能依赖网格取向，复杂几何或扭曲网格下精度下降，且容易引入零能模式（hourglass mode），缺乏可靠的理论稳定性。
+
+\subsection{加稳定项类方法}
+
+针对缩减积分引起的零能振荡，Belytschko等提出正交沙漏控制，分离零能模式并施加控制力以稳定单点积分格式；Nayroles等发展的扩散近似以局部加权最小二乘构造光滑近似，降低网格依赖。这类方法兼顾了缩减积分的高效性与数值稳定性，但稳定项的形式与参数多靠经验选取，过强则退化为新约束，引发``过稳定''自锁，过弱则无法抑制不稳定模式。
+
+\subsection{混合有限元法}
+
+混合法将剪切力作为独立变量引入，与挠度、转角构成三变量变分公式，从数学上放松横向剪切引起的过度约束。Reissner建立的广义板理论提供了本构与边界条件层面的依据，Malkus和Hughes证明了混合法与缩减积分的等价性并推广了相关数值方案。混合法的场变量自由度可独立调节，为控制约束比提供了可能；但其稳定性严格受制于LBB（Ladyzhenskaya--Babu\v{s}ka--Brezzi）条件，对单元构造要求苛刻，且现有工作多限于线性问题。
+
+\subsection{无网格法及无网格-有限元混合法}
+
+无网格法以基于节点的近似构造高阶连续形函数，天然满足板壳理论对位移高阶导数的要求。Belytschko等的无网格伽辽金法（EFG）、王东东等的Hermite再生核方法分别以移动最小二乘与再生核技术构造光滑位移场；Chen等提出稳定保形节点积分，胡明皓等引入具有Kronecker delta性质的形函数改善边界处理。这类方法精度高、几何适应性强，但本质边界条件施加繁琐，形函数构造与积分成本高，且结果对节点分布、影响域和多项式阶次等参数敏感。
+
+\section{现有研究存在的问题}
+
+上述各类方法虽在一定程度上缓解了剪切自锁，但都未把``约束比''——位移场与约束场自由度的比例——作为明确的定量化设计目标，多依赖网格拓扑与积分规则的先验经验，或受限于单元/节点单一架构，难以自由、独立地调整各场变量的自由度比例，因而无法给出免自锁的先验判断。
+
+混合法能否稳定本质上取决于LBB条件，约束比则是LBB稳定性的量化体现。在体积自锁研究中，基于完备多项式空间导出LBB系数估计式、进而得到约束比解析表达式的思路已被提出，且该思路可被推广至Mindlin板的剪切自锁问题。
+
+不过，Mindlin板的三变量混合弱形式同时包含剪切应力约束与剪切应变约束两个物理意义不同的约束，而上述LBB分析只考察了剪切应变约束，对剪切应力约束的稳定性讨论很少。这可解释为什么有些方案虽满足单一LBB条件，剪切力仍出现振荡——说明对剪切自锁约束结构的认识尚不完整。因此，需识别三变量弱形式中的全部约束，并分别建立各自的LBB稳定性判据。
+
+\section{本文主要研究内容}
+
+本文在LBB稳定性和最优约束比的思路下，研究Mindlin板的剪切自锁问题，各章安排如下：
+
 \begin{enumerate}
-    \item 通过fork建仓，具体步骤可参考\href{https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository}{这里}。
-    \item 设置 .gitignore 文件(已配置)。
-\item 设置临时文件(.aux、.bbl等)和编译文件(.pdf)位置，具体可参考\href{https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-tools}{LaTeX-Workshop帮助文档}(设置\%TMPDIR\%、\%OUTDIR\%)。
+    \item 重新分析Mindlin板三变量混合弱形式，区分剪切应力约束与剪切应变约束两个独立约束；
+    \item 分别建立两个约束的LBB稳定性条件，用完备多项式估计器推导各自的最优约束比；
+    \item 按两个最优约束比构造同时满足两条件的无网格-有限元混合离散格式；
+    \item 用经典算例验证理论结果与数值格式的有效性。
 \end{enumerate}
 
-\section{VS code配置}
-\subsection*{配置Latex}
-\href{https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-tools}{LaTeX-Workshop配置}
-\subsection*{LaTeX workshop: }
+% ============================ 第2~5章 ============================
 
-正向搜索(forward research)从代码处定位至PDF文档处：Ctrl+alt+j
+\chapter{Mindlin板混合变分公式与剪切自锁机理}
 
-反向搜索(inverse research)从PDF文档准确定位至LaTeX代码处：Ctrl+鼠标左键
+\section{Mindlin板运动学方程}
 
-正反向搜索具体教程可参考\href{https://github.com/James-Yu/LaTeX-Workshop/wiki/View#synctex}{这里}。
-\subsection*{Git Graph}
-点击左侧源代码管理插件-点击左上角View Git Graph(git log)-查看修改记录
+Reissner--Mindlin假设下，板内任意点的位移场可表示为
+% TODO(公式 tag 1): u_α = -x_3 φ_α, α=1,2
+\begin{equation}
+    u_\alpha(\mathbf{x}, x_3) = -x_3\,\varphi_\alpha(\mathbf{x}), \qquad \alpha = 1,2
+    \label{eq:kin-u-alpha}
+\end{equation}
+% TODO(公式 tag 2): u_3 = w
+\begin{equation}
+    u_3(\mathbf{x}, x_3) = w(\mathbf{x})
+    \label{eq:kin-u-3}
+\end{equation}
+其中 $\mathbf{x}=(x_1,x_2)\in\Omega\subset\mathbb{R}^{2}$ 为板中面坐标，$x_3\in[-t/2,t/2]$ 为厚度方向坐标，$t$ 为板厚，$w$ 为挠度，$\boldsymbol{\varphi}=(\varphi_1,\varphi_2)$ 为截面转角。相应的面内弯曲应变与横向剪切应变为
+% TODO(公式 tag 3): ε_{αβ} = ½(u_{α,β}+u_{β,α}) = x_3 κ_{αβ}
+\begin{equation}
+    \varepsilon_{\alpha\beta} = \tfrac{1}{2}\bigl(u_{\alpha,\beta}+u_{\beta,\alpha}\bigr) = x_3\,\kappa_{\alpha\beta}
+    \label{eq:strain-inplane}
+\end{equation}
+其中曲率张量 $\boldsymbol{\kappa}$ 与剪切应变向量 $\boldsymbol{\gamma}$ 定义为
+% TODO(公式 tag 4): κ = -½(∇φ + φ∇)
+\begin{equation}
+    \boldsymbol{\kappa} = -\tfrac{1}{2}\bigl(\nabla\boldsymbol{\varphi}+\boldsymbol{\varphi}\nabla\bigr)
+    \label{eq:curvature}
+\end{equation}
+横向剪切应变为
+% TODO(公式 tag 5): ε_{α3} = ½(w_{,α} - φ_α)
+\begin{equation}
+    \varepsilon_{\alpha 3} = \tfrac{1}{2}\bigl(w_{,\alpha}-\varphi_\alpha\bigr)
+    \label{eq:shear-strain-comp}
+\end{equation}
+% TODO(公式 tag 6): γ = ∇w - φ
+\begin{equation}
+    \boldsymbol{\gamma} = \nabla w - \boldsymbol{\varphi}
+    \label{eq:gamma}
+\end{equation}
+对均匀各向同性材料，面内应力与横向剪应力分别为
+% TODO(公式 tag 7): σ_{αβ} = D_{αβγδ} ε_{γδ}
+\begin{equation}
+    \sigma_{\alpha\beta} = D_{\alpha\beta\gamma\delta}\,\varepsilon_{\gamma\delta}
+    \label{eq:stress-mid}
+\end{equation}
+% TODO(公式 tag 8): D 弹性张量表达式
+\begin{equation}
+    D_{\alpha\beta\gamma\delta} = \frac{E}{1-\nu^{2}}\left[\frac{\nu}{1-\nu}\,\delta_{\alpha\beta}\delta_{\gamma\delta}
+    + \frac{1}{2}\bigl(\delta_{\alpha\gamma}\delta_{\beta\delta}+\delta_{\alpha\delta}\delta_{\beta\gamma}\bigr)\right]
+    \label{eq:elasticity-D}
+\end{equation}
+% TODO(公式 tag 9): σ_{α3} = G γ_α, G = E/(2(1+ν))
+\begin{equation}
+    \sigma_{\alpha 3} = G\,\gamma_\alpha, \qquad G = \frac{E}{2(1+\nu)}
+    \label{eq:shear-stress}
+\end{equation}
+沿厚度积分，得到弯矩与剪切力合力
+% TODO(公式 tag 10): m_{αβ} = ∫ x_3 σ_{αβ} dx_3 = t³/12 D κ
+\begin{equation}
+    m_{\alpha\beta} = \int_{-t/2}^{t/2}x_3\,\sigma_{\alpha\beta}\,\mathrm{d}x_3 = \frac{t^{3}}{12}\,D_{\alpha\beta\gamma\delta}\,\kappa_{\gamma\delta}
+    \label{eq:moment-resultant}
+\end{equation}
+% TODO(公式 tag 11): q_α = k G t γ_α
+\begin{equation}
+    q_\alpha = \int_{-t/2}^{t/2}\sigma_{\alpha 3}\,\mathrm{d}x_3 = k\,G\,t\,\gamma_\alpha
+    \label{eq:shearforce-resultant}
+\end{equation}
+其中 $k$ 为剪切修正系数，本文取 $k=5/6$。由式~\eqref{eq:moment-resultant} 与式~\eqref{eq:shearforce-resultant} 可见，弯矩与剪切力的量级分别为 $t^{3}$ 与 $t^{1}$；当板厚 $t\to0$ 时，剪切刚度相对弯曲刚度趋于无穷，剪切应变被强制趋零，即 $\boldsymbol{\gamma}\to\mathbf{0}$，这一过度约束正是剪切自锁的根源。
 
-\subsection*{Todo Tree}
-帮助管理项目中的TODO注释和其他标记，\href{https://blog.csdn.net/m0_37586991/article/details/104239568}{Todo Tree安装步骤}。
+板的平衡微分方程与边界条件为
+% TODO(公式 tag 12): ∇·m - q = 0
+\begin{equation}
+    \nabla\cdot\mathbf{m}-\mathbf{q} = \mathbf{0}
+    \label{eq:equil-moment}
+\end{equation}
+% TODO(公式 tag 13): ∇·q + p̄ = 0
+\begin{equation}
+    \nabla\cdot\mathbf{q}+\bar{p} = 0
+    \label{eq:equil-shear}
+\end{equation}
+其中本质边界条件为 $w=\bar{w}$（在 $\Gamma_w$ 上）、$\boldsymbol{\varphi}=\bar{\boldsymbol{\varphi}}$（在 $\Gamma_\varphi$ 上），自然边界条件为 $m_n=\bar{m}_n$（在 $\Gamma_m$ 上）、$q_n=\bar{q}_n$（在 $\Gamma_q$ 上），且 $\Gamma_w\cup\Gamma_q=\partial\Omega$、$\Gamma_\varphi\cup\Gamma_m=\partial\Omega$。
 
-\subsection*{Zotero LaTeX}
-Zotero管理参考文献
-\section{文件、label 命名规则}
-Latex路径中文件只允许以英文命名
+\section{三变量混合变分格式}
 
-\subsection*{公式}
-\begin{lstlisting}[language=TeX]
-    \label{CH_name}{formula_name}
-\end{lstlisting}
+位移型格式在薄板极限下会因 $\boldsymbol{\gamma}\to\mathbf{0}$ 的约束而产生自锁。为放松该约束，将剪切力 $\mathbf{q}$ 作为独立变量引入，与挠度、转角一同构成三变量混合变分格式。对应的互补能量泛函为
+% TODO(公式 tag 12/框架Pi): Π(u,q) = ½a(φ,φ)+½c(q,q)+b_φ(φ,q)+b_w(w,q)-f_φ-f_w-f_q
+\begin{equation}
+    \Pi(\mathbf{u},\mathbf{q}) = \frac{1}{2}a(\boldsymbol{\varphi},\boldsymbol{\varphi}) + \frac{1}{2}c(\mathbf{q},\mathbf{q})
+    + b_\varphi(\boldsymbol{\varphi},\mathbf{q}) + b_w(w,\mathbf{q})
+    - f_\varphi(\boldsymbol{\varphi}) - f_w(w) - f_q(\mathbf{q})
+    \label{eq:Pi}
+\end{equation}
+其中各双线性与线性形式定义为
+% TODO(公式 tag 14): a(δφ,φ)
+\begin{equation}
+    a(\delta\boldsymbol{\varphi},\boldsymbol{\varphi}) = \int_\Omega \delta\boldsymbol{\kappa}:\frac{t^{3}}{12}\mathbf{D}:\boldsymbol{\kappa}\,\mathrm{d}\Omega
+    \label{eq:form-a}
+\end{equation}
+% TODO(公式 tag 15): c(δq,q)
+\begin{equation}
+    c(\delta\mathbf{q},\mathbf{q}) = \int_\Omega \delta\mathbf{q}\cdot\frac{1}{kGt}\,\mathbf{q}\,\mathrm{d}\Omega
+    \label{eq:form-c}
+\end{equation}
+% TODO(公式 tag 16): b_φ(δφ,q)
+\begin{equation}
+    b_\varphi(\delta\boldsymbol{\varphi},\mathbf{q}) = -\int_\Omega \delta\boldsymbol{\varphi}\cdot\mathbf{q}\,\mathrm{d}\Omega
+    \label{eq:form-bphi}
+\end{equation}
+% TODO(公式 tag 17): b_w(δw,q)
+\begin{equation}
+    b_w(\delta w,\mathbf{q}) = \int_\Omega \nabla(\delta w)\cdot\mathbf{q}\,\mathrm{d}\Omega
+    - \int_{\Gamma_w}\delta w\,(\mathbf{q}\cdot\mathbf{n})\,\mathrm{d}\Gamma
+    \label{eq:form-bw}
+\end{equation}
+% TODO(公式 tag 18): f_φ(δφ)
+\begin{equation}
+    f_\varphi(\delta\boldsymbol{\varphi}) = \int_{\Gamma_m}\delta\boldsymbol{\varphi}\cdot\bar{\mathbf{m}}_n\,\mathrm{d}\Gamma
+    \label{eq:form-fphi}
+\end{equation}
+% TODO(公式 tag 19): f_w(δw)
+\begin{equation}
+    f_w(\delta w) = \int_{\Gamma_q}\delta w\,\bar{q}_n\,\mathrm{d}\Gamma + \int_\Omega \delta w\,\bar{p}\,\mathrm{d}\Omega
+    \label{eq:form-fw}
+\end{equation}
+% TODO(公式 tag 20): f_q(δq)
+\begin{equation}
+    f_q(\delta\mathbf{q}) = -\int_{\Gamma_w}\delta\mathbf{q}\cdot\mathbf{n}\,\bar{w}\,\mathrm{d}\Gamma
+    \label{eq:form-fq}
+\end{equation}
+对泛函 $\Pi$ 取一阶变分并令 $\delta\Pi=0$，得到三变量 Galerkin 弱形式：求 $w\in W$、$\boldsymbol{\varphi}\in\Phi$、$\mathbf{q}\in Q$，使得
+% TODO(公式 tag 13a): a(δφ,φ)+b_φ(δφ,q)=f_φ
+\begin{equation}
+    a(\delta\boldsymbol{\varphi},\boldsymbol{\varphi}) + b_\varphi(\delta\boldsymbol{\varphi},\mathbf{q}) = f_\varphi(\delta\boldsymbol{\varphi}), \quad \forall\,\delta\boldsymbol{\varphi}\in\Phi
+    \label{eq:weak-phi}
+\end{equation}
+% TODO(公式 tag 13b): b_w(δw,q)=f_w
+\begin{equation}
+    b_w(\delta w,\mathbf{q}) = f_w(\delta w), \quad \forall\,\delta w\in W
+    \label{eq:weak-w}
+\end{equation}
+% TODO(公式 tag 13c): b_φ(φ,δq)+b_w(w,δq)=f_q
+\begin{equation}
+    b_\varphi(\boldsymbol{\varphi},\delta\mathbf{q}) + b_w(w,\delta\mathbf{q}) = f_q(\delta\mathbf{q}), \quad \forall\,\delta\mathbf{q}\in Q
+    \label{eq:weak-q}
+\end{equation}
+其中函数空间为
+% TODO(公式 tag 21): W 空间
+\begin{equation}
+    W = \bigl\{w\in H^{1}(\Omega): w=\bar{w}\ \text{on}\ \Gamma_w\bigr\}
+    \label{eq:space-W}
+\end{equation}
+% TODO(公式 tag 22): Φ 空间
+\begin{equation}
+    \Phi = \bigl\{\boldsymbol{\varphi}\in[H^{1}(\Omega)]^{2}: \boldsymbol{\varphi}=\bar{\boldsymbol{\varphi}}\ \text{on}\ \Gamma_\varphi\bigr\}
+    \label{eq:space-Phi}
+\end{equation}
+% TODO(公式 tag 23): Q 空间
+\begin{equation}
+    Q = \bigl\{\mathbf{q}\in[L^{2}(\Omega)]^{2}\bigr\}
+    \label{eq:space-Q}
+\end{equation}
+引入离散近似空间 $W^{h}\subset W$、$\Phi^{h}\subset\Phi$、$Q^{h}\subset Q$，各场近似为
+% TODO(公式 tag 24): 各场离散近似
+\begin{equation}
+    w^{h} = \sum_{I=1}^{n_w}N_I^{w}(\mathbf{x})\,w_I, \qquad
+    \boldsymbol{\varphi}^{h} = \sum_{K=1}^{n_\varphi}N_K^{\varphi}(\mathbf{x})\,\boldsymbol{\varphi}_K, \qquad
+    \mathbf{q}^{h} = \sum_{R=1}^{n_q}N_R^{q}(\mathbf{x})\,\mathbf{q}_R
+    \label{eq:approx-fields}
+\end{equation}
+代入式~\eqref{eq:weak-phi}--\eqref{eq:weak-q}，得离散 Galerkin 弱形式
+% TODO(公式 tag 25a): 离散第一式
+\begin{equation}
+    a(\delta\boldsymbol{\varphi}^{h},\boldsymbol{\varphi}^{h}) + b_\varphi(\delta\boldsymbol{\varphi}^{h},\mathbf{q}^{h}) = f_\varphi(\delta\boldsymbol{\varphi}^{h}), \quad \forall\,\delta\boldsymbol{\varphi}^{h}\in\Phi^{h}
+    \label{eq:weak-phi-h}
+\end{equation}
+% TODO(公式 tag 25b): 离散第二式
+\begin{equation}
+    b_w(\delta w^{h},\mathbf{q}^{h}) = f_w(\delta w^{h}), \quad \forall\,\delta w^{h}\in W^{h}
+    \label{eq:weak-w-h}
+\end{equation}
+% TODO(公式 tag 25c): 离散第三式
+\begin{equation}
+    b_\varphi(\boldsymbol{\varphi}^{h},\delta\mathbf{q}^{h}) + b_w(w^{h},\delta\mathbf{q}^{h}) = f_q(\delta\mathbf{q}^{h}), \quad \forall\,\delta\mathbf{q}^{h}\in Q^{h}
+    \label{eq:weak-q-h}
+\end{equation}
 
-\subsection*{图}
-\begin{lstlisting}
-    \label{CH_name}{fig_name}
-\end{lstlisting}
+\section{两个独立约束的识别}
 
-\subsection*{表}
-\begin{lstlisting}
-    \label{CH_name}{table_name}
-\end{lstlisting}
+展开式~\eqref{eq:weak-w-h} 和式~\eqref{eq:weak-q-h}，可以揭示两个约束的物理本质完全不同。
 
+\noindent\textbf{式~\eqref{eq:weak-w-h} —— 剪切应力平衡约束：}
+\begin{equation}
+    b_w(\delta w^{h},\mathbf{q}^{h})
+    = \int_\Omega \nabla(\delta w^{h})\cdot\mathbf{q}^{h}\,\mathrm{d}\Omega
+    - \int_{\Gamma_w}\delta w^{h}\,\bigl(\mathbf{q}^{h}\cdot\mathbf{n}\bigr)\,\mathrm{d}\Gamma
+    = f_w(\delta w^{h})
+    \label{eq:bw-expand}
+\end{equation}
+展开后：
+% TODO(公式 tag 26): 展开式
+\begin{equation}
+    \int_{\Gamma_q}\delta w^{h}\,\bigl(\mathbf{q}^{h}\cdot\mathbf{n}-\bar{q}_n\bigr)\,\mathrm{d}\Gamma
+    - \int_\Omega \delta w^{h}\,\bigl(\nabla\cdot\mathbf{q}^{h}+\bar{p}\bigr)\,\mathrm{d}\Omega = 0
+    \label{eq:constraint-stress}
+\end{equation}
+\begin{itemize}
+    \item 域内部分：约束 $\nabla\cdot\mathbf{q}^{h}+\bar{p}=0$（剪切力的散度平衡）；
+    \item 边界部分：约束 $\mathbf{q}^{h}\cdot\mathbf{n}=\bar{q}_n$ 在 $\Gamma_q$ 上（剪切力的边界法向值）；
+    \item \textbf{物理本质：力的平衡条件}。
+\end{itemize}
 
-\chapter{图表设置}
-\subsection*{单张}
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.4]{figures/1.png}
-\caption{\centering{边界点处无网格形函数}}
-\label{CHGraphsettings_fig1_meshfree}
-\end{figure}
-单张图片Latex代码
-\begin{lstlisting}
-\begin{figure}[H]-放置位置
-\centering-居中
-\includegraphics[scale=0.4]{figures/1.png}-大小、图片路径
-\caption{\centering{边界点处无网格形函数}}-图名
-\label{CHGraphsettings_fig1_meshfree}-命名
-\end{figure}
-\end{lstlisting}
-\newpage
-\subsection*{并排}
-\begin{figure}[H]
-    \centering
-    \begin{subcaptiongroup}
-    \includegraphics[width=0.49\textwidth]{figures/1.png}
-    \phantomcaption\label{1}
-    \includegraphics[width=0.49\textwidth]{figures/2.png}
-    \phantomcaption\label{2}
-    \end{subcaptiongroup}
-\caption{\centering{无网格形函数：\subref{1}边界点；\subref{2}中心点}}
-% NOTE:遇到图名过长需要换行的编写：
-% \caption{\centering{标题：\protect\linebreak \subref{xxx} 小标题1；\subref{xx} 小标题2；\subref{xxx}小标题3；\subref{xxx} 小标题4}}
-\label{CHGraphsettings_fig2_meshfree}
-\end{figure}
-并排图片Latex代码
-\begin{lstlisting}
-\begin{figure}[H]
-\centering
-\begin{subcaptiongroup}
-\includegraphics[width=0.49\textwidth]{figure/1.png}
-\phantomcaption\label{1}
-\includegraphics[width=0.49\textwidth]{figure/2.png}
-\phantomcaption\label{2}
-\end{subcaptiongroup}
-\caption{\centering{无网格形函数：\subref{1}边界点；\subref{2}中心点}}
-\end{lstlisting}
-\newpage
-\subsection*{表格式图片}
-\begin{figure}[H]
-    \centering
-    \begin{tabular}{cccc}
-    $\quad$&$p=2$&$p=2$&$p=2$\\
-    边界点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/1.png}}\end{subcaptiongroup}
-    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/1.png}}\end{subcaptiongroup}
-    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/1.png}}\end{subcaptiongroup}\\
-    中心点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/2.png}}\end{subcaptiongroup}
-    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/2.png}}\end{subcaptiongroup}
-    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/2.png}}\end{subcaptiongroup}\\
-    \end{tabular}
-    \caption{\textbf{二维边界点与内部节点无网格形函数图}}\label{CHGraphsettings_fig3_meshfree}
-    \end{figure}
+\noindent\textbf{式~\eqref{eq:weak-q-h} —— 剪切应变协调约束：}
+% TODO(公式 tag 27): 展开式
+\begin{equation}
+    b_\varphi(\boldsymbol{\varphi}^{h},\delta\mathbf{q}^{h}) + b_w(w^{h},\delta\mathbf{q}^{h})
+    = \int_\Omega \delta\mathbf{q}^{h}\cdot\bigl(\nabla w^{h}-\boldsymbol{\varphi}^{h}\bigr)\,\mathrm{d}\Omega
+    - \int_{\Gamma_w}\delta\mathbf{q}^{h}\cdot\mathbf{n}\,\bigl(w^{h}-\bar{w}\bigr)\,\mathrm{d}\Gamma = 0
+    \label{eq:constraint-strain}
+\end{equation}
+\begin{itemize}
+    \item 域内部分：约束 $\nabla w^{h}-\boldsymbol{\varphi}^{h}=\mathbf{0}$（剪切应变 $\boldsymbol{\gamma}=\mathbf{0}$）；
+    \item 边界部分：约束 $w^{h}=\bar{w}$ 在 $\Gamma_w$ 上（挠度的本质边界条件）；
+    \item \textbf{物理本质：变形协调条件}。
+\end{itemize}
 
-表格式图片Latex代码
-\begin{lstlisting}
-\begin{figure}[H]
-\centering
-\begin{tabular}{cccc}
-$\quad$&$p=2$&$p=2$&$p=2$\\
-边界点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/1.png}}\end{subcaptiongroup}
-&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/1.png}}\end{subcaptiongroup}
-&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/1.png}}\end{subcaptiongroup}\\
-中心点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/2.png}}\end{subcaptiongroup}
-&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/2.png}}\end{subcaptiongroup}
-&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/2.png}}\end{subcaptiongroup}\\
-\end{tabular}
-\caption{\textbf{二维边界点与内部节点无网格形函数图}}\label{CHGraphsettings_fig3_meshfree}
-\end{figure}     
-\end{lstlisting}
+\textbf{结论：}式~\eqref{eq:weak-w-h} 和式~\eqref{eq:weak-q-h} 是两个物理本质完全不同的约束，各自需要独立的LBB稳定性条件。传统方法大多只考虑了式~\eqref{eq:weak-q-h} 中的剪切应变约束，忽视了式~\eqref{eq:weak-w-h} 中剪切应力约束的稳定性。
 
-\subsection*{三线表}
+\section{免自锁问题的常用方法}
+
+由上一节可知，剪切自锁在混合弱形式中表现为剪切应力约束（式~\eqref{eq:weak-w-h}）与剪切应变约束（式~\eqref{eq:weak-q-h}）两个独立约束。工程中常用的免剪切自锁单元，大多只针对剪切应变约束进行构造，下面以离散剪切间隙法（DSG）与张量分量混合插值法（MITC）两类代表性方法说明。
+
+\subsection{离散剪切间隙法（DSG）}
+
+Bletzinger、Bischoff 与 Ramm 提出离散剪切间隙法（Discrete Shear Gap, DSG）。该方法不引入独立的剪切力变量，而是沿单元边定义``剪切间隙''，据此重构剪切应变场，使剪切应变不再由位移梯度直接插值，从而避免薄板极限下的过度约束。DSG 实现简单、便于嵌入标准位移元，但本质上只放松了剪切应变约束（式~\eqref{eq:weak-q-h}），并未涉及剪切应力约束（式~\eqref{eq:weak-w-h}）。
+
+\subsection{张量分量混合插值法（MITC）}
+
+Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Tensorial Components, MITC），对横向剪切应变采用独立的插值，并在单元内的绑定点（tying points）处与位移插值得到的剪切应变相连，使剪切应变的分布阶次低于位移插值。MITC 单元通过了 inf--sup 检验，是应用最广泛的免剪切自锁单元之一；但同样地，MITC 也只处理了剪切应变约束，未考虑剪切应力约束。
+
+\section{小结}
+
+本章建立了 Mindlin 板的三变量混合弱形式，指出剪切自锁对应剪切应力约束与剪切应变约束两个独立约束；常用的 DSG、MITC 单元仅处理了剪切应变约束。第~\ref{ch:lbb}~章将分别为两个约束建立 LBB 稳定性条件并推导最优约束比。
+
+% ============================ 第3章 ============================
+\chapter{剪切自锁问题的LBB稳定性条件与最优约束比}
+\label{ch:lbb}
+
+\section{LBB稳定性条件的一般框架}
+
+考虑一般约束问题：求 $u\in U$ 使得
+% TODO(公式 tag 28): b(p,u) = g(p), ∀p∈P
+\begin{equation}
+    b(p,u) = g(p), \quad \forall\,p\in P
+    \label{eq:constraint-problem}
+\end{equation}
+其中 $b:U\times P\to\mathbb{R}$ 为双线性形式。
+
+引入离散空间 $U^{h}\subset U$、$P^{h}\subset P$，LBB条件要求存在常数 $\beta>0$ 使得
+% TODO(公式 tag 29): inf-sup 定义
+\begin{equation}
+    \inf_{p^{h}\in P^{h}}\ \sup_{u^{h}\in U^{h}}
+    \frac{\bigl|b(p^{h},u^{h})\bigr|}{\lVert p^{h}\rVert_P\,\lVert u^{h}\rVert_U} \ge \beta
+    \label{eq:lbb-def}
+\end{equation}
+
+\section{基于完备多项式空间的LBB系数估计}
+
+\textbf{定理（完备多项式LBB系数估计器）：}设 $P:U\to P$ 为双线性形式 $b$ 对应的线性算子，$P_h:U^{h}\to P^{h}$ 为 $P$ 在 $P^{h}$ 上的正交投影算子，$U^{n_u}\subset U$ 为与 $U^{h}$ 同维的完备多项式空间。则LBB系数 $\beta$ 可估计为
+% TODO(公式 tag 30): 估计式 β ≤ inf sup ‖Pu‖/‖u‖ + O(h)
+\begin{equation}
+    \beta \le \inf_{U'\subset U^{n_u}\setminus\ker P_h I_h}\ \sup_{u\in U'}
+    \frac{\lVert Pu\rVert_P}{\lVert u\rVert_U} + O(h)
+    \label{eq:beta-estimate}
+\end{equation}
+其中 $I_h:U^{n_u}\to U^{h}$ 为插值算子，$h$ 为离散特征尺寸。
+
+\textbf{核心含义：}$\beta$ 是否非零（即LBB条件是否满足）仅取决于多项式空间中 $\ker P$ 的维数与 $P$ 空间的维数关系，与离散尺寸 $h$ 无关（$O(h)$ 项在 $h\to0$ 时消失）。
+
+\textbf{证明：}记 $P$ 为双线性形式 $b$ 对应的线性算子，满足 $b(p,u)=(p,Pu)$。将LBB条件改写为关于投影算子 $P_h$ 的形式，并把下确界限定在 $\operatorname{Im}P_h$ 上；对固定的 $p^{h}$，取 $U'=\{u^{h}\in U^{h}\mid P_h u^{h}=p^{h}\}$，由 Cauchy--Schwarz 不等式知等号成立，得到
+% TODO(公式 tag 31): 投影算子形式
+\begin{equation}
+    \beta \le \inf_{U'\subset U^{h}\setminus\ker P_h}\ \sup_{u^{h}\in U'}
+    \frac{\lVert P_h u^{h}\rVert_P}{\lVert u^{h}\rVert_U}
+    \label{eq:beta-projection}
+\end{equation}
+再引入与 $U^{h}$ 同维的完备多项式空间 $U^{n_u}$ 及插值算子 $I_h$，并由三角不等式与插值误差估计，即得最终估计式~\eqref{eq:beta-estimate}。由此可见，$\beta$ 是否为正只取决于多项式空间 $U^{n_u}$ 中 $\ker P$ 与像空间的维数关系，与离散尺寸 $h$ 无关。
+
+\section{剪切应力约束的LBB条件与最优约束比}
+
+对剪切应力约束，其离散LBB条件要求存在常数 $\beta_q>0$，使得
+% TODO(公式 tag 32): inf_{w^h∈W^h} sup_{q^h∈Q^h} |b_w(w^h,q^h)|/(‖w^h‖_W‖q^h‖_Q) ≥ β_q
+\begin{equation}
+    \inf_{w^{h}\in W^{h}}\ \sup_{q^{h}\in Q^{h}}
+    \frac{\bigl|b_w(w^{h},q^{h})\bigr|}{\lVert w^{h}\rVert_W\,\lVert q^{h}\rVert_Q} \ge \beta_q
+    \label{eq:lbb-betaq}
+\end{equation}
+其中范数取为
+% TODO(公式 tag 33): ‖w‖_W² 定义
+\begin{equation}
+    \lVert w\rVert_W^{2} = \int_\Omega \nabla w\cdot(kGt)\cdot\nabla w\,\mathrm{d}\Omega
+    \label{eq:norm-W}
+\end{equation}
+% TODO(公式 tag 34): ‖q‖_Q² 定义
+\begin{equation}
+    \lVert q\rVert_Q^{2} = \int_\Omega q\cdot\frac{1}{kGt}\cdot q\,\mathrm{d}\Omega
+    \label{eq:norm-Q}
+\end{equation}
+要判断该条件能否成立，需明确约束所对应的算子及其核空间结构。由式~\eqref{eq:constraint-stress} 可知，剪切应力约束的域内部分是 $\nabla\cdot\mathbf{q}+\bar{p}=0$、边界部分是 $\mathbf{q}\cdot\mathbf{n}=\bar{q}_n$（在 $\Gamma_q$ 上），即
+% TODO(公式 tag 35): 剪切应力约束的域内/边界分解
+\begin{equation}
+    \int_{\Gamma_q}\delta w^{h}\,\bigl(\mathbf{q}^{h}\cdot\mathbf{n}-\bar{q}_n\bigr)\,\mathrm{d}\Gamma
+    - \int_\Omega \delta w^{h}\,\bigl(\nabla\cdot\mathbf{q}^{h}+\bar{p}\bigr)\,\mathrm{d}\Omega = 0
+    \label{eq:stress-op-decomp}
+\end{equation}
+据此定义算子 $\mathbf{W}:Q\to W$：
+% TODO(公式 tag 36): 算子 W（域内 -∇·，边界 n·，含迹算子）
+\begin{equation}
+    \mathbf{W} = \begin{cases}
+        \mathbf{W}_\Omega = -\nabla\cdot & \text{在 }\Omega\text{ 内}\\
+        \mathbf{W}_{\Gamma_q}\circ T_{\Gamma_q} = \mathbf{n}\cdot & \text{在 }\Gamma_q\text{ 上}
+    \end{cases}
+    \label{eq:op-W}
+\end{equation}
+其中 $T_{\Gamma_q}:Q\to Q|_{\Gamma_q}$ 为迹算子。将该算子代入上述定理，得
+% TODO(公式 tag 37): β_q 估计式
+\begin{equation}
+    \beta_q \le \inf_{W'\subset W^{n_w}\setminus\ker\mathbf{W}_h I_h^{w}}\ \sup_{w\in W'}
+    \frac{\lVert \mathbf{W} w\rVert_Q}{\lVert w\rVert_W} + O(h)
+    \label{eq:betaq-estimate}
+\end{equation}
+于是LBB条件成立的必要条件是
+% TODO(公式 tag 38): 必要性维数条件
+\begin{equation}
+    \dim\bigl(W^{n_w}\setminus\ker\mathbf{W}_h I_h^{w}\bigr)
+    \le \dim\bigl(W^{n_w}\setminus\ker\mathbf{W}\bigr)
+    \label{eq:nec-dim-stress}
+\end{equation}
+左端维数方面，由 $\mathbf{W}_h I_h^{w}$ 的像空间与 $Q^{h}$ 同构，有
+% TODO(公式 tag 39): dim(...) = dim(Im W_h) = dim Q^h = 2n_q
+\begin{equation}
+    \dim\bigl(W^{n_w}\setminus\ker\mathbf{W}_h I_h^{w}\bigr)
+    = \dim(\operatorname{Im}\mathbf{W}_h) = \dim Q^{h} = 2n_q
+    \label{eq:lhs-dim-stress}
+\end{equation}
+右端维数方面，$\ker\mathbf{W}=\ker\mathbf{W}_\Omega\cap\ker\mathbf{W}_{\Gamma_q}T_{\Gamma_q}$。由 De Morgan 定理和 Grassmann 定理，将 $Q^{n_q}\setminus\ker\mathbf{W}$ 分解为域内与边界两部分：先看域内部分，$\mathbf{W}_\Omega=-\nabla\cdot$ 为散度算子，作用于二阶张量多项式空间 $Q^{n_q}$（维数 $2n_q$）上，其像空间中的多项式比 $Q^{n_q}$ 低一阶；再看边界部分，利用迹算子不改变像空间维数的性质。合并得右端维数的综合估计
+% TODO(公式 tag 42-47): dim(Im W_Ω)、dim(Q^{n_q}\setminus\ker W_{Γ_q}T_{Γ_q}) 与综合界（⌊⌋/⌈⌉ 与 ⟨·⟩ 记号）
+% 将左右两端维数代入必要性条件，并注意到边界自由度远小于域内自由度，可得
+% TODO(公式 tag 48): 2n_q ≤ ⟨⌊[n_q]⌋-1⟩
+利用 $n_q$ 与 $[n_q]$ 的关系 $n_q=\langle[n_q]\rangle=([n_q]+1)([n_q]+2)/2$，最终得到剪切应力约束的最优约束比
+% TODO(公式 tag 49): 结论 n_q ≤ n_φ
+\begin{equation}
+    \boxed{\,n_q \le n_\varphi\,}
+    \label{eq:ratio-stress}
+\end{equation}
+即剪切应力约束的LBB条件要求剪切力节点数 $n_q$ 不超过转角节点数 $n_\varphi$。
+
+\section{剪切应变约束的LBB条件与最优约束比}
+
+对剪切应变约束，其离散LBB条件要求存在常数 $\beta_\gamma>0$，使得
+% TODO(公式 tag 50): inf_{q^h∈Q^h} sup_{u^h∈W^h×Φ^h} |b(q^h,u^h)|/(‖q^h‖_Q‖u^h‖_{W×Φ}) ≥ β_γ
+\begin{equation}
+    \inf_{q^{h}\in Q^{h}}\ \sup_{u^{h}\in W^{h}\times\Phi^{h}}
+    \frac{\bigl|b(q^{h},u^{h})\bigr|}{\lVert q^{h}\rVert_Q\,\lVert u^{h}\rVert_{W\times\Phi}} \ge \beta_\gamma
+    \label{eq:lbb-betagamma}
+\end{equation}
+其中 $b(q,u)=b_\varphi(\varphi,q)+b_w(w,q)$，$\lVert u\rVert_{W\times\Phi}^{2}=\lVert w\rVert_W^{2}+\lVert\varphi\rVert_\Phi^{2}$。
+
+展开式~\eqref{eq:weak-q-h}，该约束可写为
+% TODO(公式 tag 51): 展开式
+\begin{equation}
+    b(\delta q^{h},u^{h})
+    = \int_\Omega \delta q^{h}\cdot\bigl(\nabla w^{h}-\varphi^{h}\bigr)\,\mathrm{d}\Omega
+    - \int_{\Gamma_w}\delta q^{h}\cdot\mathbf{n}\,\bigl(w^{h}-\bar{w}\bigr)\,\mathrm{d}\Gamma = 0
+    \label{eq:strain-op-decomp}
+\end{equation}
+据此定义算子 $\mathbf{Q}:W\times\Phi\to Q$：
+% TODO(公式 tag 52): 算子 Q（域内 {∇,-}，边界 -n，含迹算子）
+\begin{equation}
+    \mathbf{Q} = \begin{cases}
+        \mathbf{Q}_\Omega = \{\nabla,\,-\} & \text{在 }\Omega\text{ 内}\\
+        \mathbf{Q}_{\Gamma_w}T_w,\quad \mathbf{Q}_{\Gamma_w}=-\mathbf{n} & \text{在 }\Gamma_w\text{ 上}
+    \end{cases}
+    \label{eq:op-Q}
+\end{equation}
+其中 $T_w:W\times\Phi\to W|_{\Gamma_w}$ 为迹算子。将该算子代入上述定理，得
+% TODO(公式 tag 53): β_γ 估计式
+\begin{equation}
+    \beta_\gamma \le \inf_{U'\subset W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}_h I_h^{u}}\ \sup_{u\in U'}
+    \frac{\lVert \mathbf{Q} u\rVert_Q}{\lVert u\rVert_{W\times\Phi}} + O(h)
+    \label{eq:betagamma-estimate}
+\end{equation}
+于是LBB条件成立的必要条件是
+% TODO(公式 tag 54): 必要性维数条件
+\begin{equation}
+    \dim\bigl(W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}_h I_h^{u}\bigr)
+    \le \dim\bigl(W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}\bigr)
+    \label{eq:nec-dim-strain}
+\end{equation}
+左端维数方面，同样有
+% TODO(公式 tag 55): dim(...) = dim(Im Q_h) = dim Q^h = 2n_q
+\begin{equation}
+    \dim\bigl(W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}_h I_h^{u}\bigr)
+    = \dim(\operatorname{Im}\mathbf{Q}_h) = \dim Q^{h} = 2n_q
+    \label{eq:lhs-dim-strain}
+\end{equation}
+右端维数方面，$\ker\mathbf{Q}=\ker\mathbf{Q}_\Omega\cap\ker\mathbf{Q}_{\Gamma_w}T_w$，同样分解为域内与边界两部分。先看域内部分：$\ker\mathbf{Q}_\Omega$ 满足 $\nabla w=\varphi$，即 $w$ 比 $\varphi$ 高一阶，由 $W^{n_w}\times\Phi^{n_\varphi}$ 的单项式基展开可得 $\dim\ker\mathbf{Q}_\Omega=\min(n_w,n_s)$，其中 $n_s$ 为比 $\Phi^{n_\varphi}$ 高一阶的单项式个数；再看边界部分，$\ker\mathbf{Q}_{\Gamma_w}=\emptyset$（$\mathbf{Q}_{\Gamma_w}=-\mathbf{n}$ 无非零核）。合并得右端维数的综合估计
+% TODO(公式 tag 58-63): 基展开、dim ker、n_s 界、边界维数与综合界
+% 将左右两端维数代入必要性条件，并注意到边界自由度远小于域内自由度，可得
+% TODO(公式 tag 64): 2n_q ≤ n_w+2n_φ-min(n_w,n_s)
+当 $n_w\ge n_s$ 时，$2n_q\le 2n_\varphi$，即 $n_q\le n_\varphi$；当 $n_w<n_s$ 时，$2n_q\le n_w+2n_\varphi-n_w=2n_\varphi$，同样得 $n_q\le n_\varphi$。对于 $w$ 的最优约束比，需满足 $n_w\approx n_s=\langle[n_q]\rangle$，即剪切应变约束的最优约束比为
+% TODO(公式 tag 65): 结论 n_q ≤ n_φ 且 n_w^opt = ⟨⌊[n_q]⌋-1⟩
+\begin{equation}
+    \boxed{\,n_q \le n_\varphi,\qquad n_w^{\mathrm{opt}} = \bigl\langle\lfloor [n_q]\rfloor-1\bigr\rangle\,}
+    \label{eq:ratio-strain}
+\end{equation}
+即剪切应变约束的LBB条件要求剪切力节点数 $n_q$ 不超过转角节点数 $n_\varphi$，且挠度节点数 $n_w$ 应比 $n_q$ 对应的多项式阶数低一阶。
+
+\section{两个最优约束比的综合讨论}
+
+综合上述分析，两个独立约束对应的最优约束比如表~\ref{tab:ratios} 所示。
+
 \begin{table}[H]
-    \caption{\textbf{三次基函数无网格法分片实验结果}}
-    \centering\label{CHGraphsettings_table_cubic}
+    \centering
+    \caption{两个独立约束对应的最优约束比}
+    \label{tab:ratios}
+    \begin{tabular}{lllll}
+        \toprule
+        自锁类型 & 约束来源 & 对应算子 & $\ker$ 空间特点 & 最优约束比 \\
+        \midrule
+        剪切应力自锁 & $b_w(w,q)$ & $\mathbf{W}=(-\nabla\cdot,\;\mathbf{n}\cdot)$ & $\nabla\cdot q=0$ 的多项式 & $n_q\le n_\varphi$ \\
+        剪切应变自锁 & $b(q,u)$ & $\mathbf{Q}=(\nabla w-\varphi,\;-\mathbf{n}\cdot)$ & $w$ 比 $\varphi$ 高一阶 & $n_q\le n_\varphi$，$n_w=\langle\lfloor[n_q]\rfloor-1\rangle$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{数值验证（特征值问题）}
+% 本节内容待填：通过广义特征值问题数值测试不同节点配比下的 \beta_q 与 \beta_\gamma（收敛率/特征值验证，见第4章）。
+
+\section{小结}
+
+\begin{itemize}
+    \item 剪切自锁涉及两个独立约束，各自需要LBB条件；
+    \item 剪切应力LBB条件：$n_q\le n_\varphi$；
+    \item 剪切应变LBB条件：$n_q\le n_\varphi$，$n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。
+\end{itemize}
+
+% ============================ 第4章 ============================
+\chapter{免剪切自锁的无网格有限元混合离散方法}
+
+\section{离散策略的选择}
+
+回顾两个约束比对 $w$、$\varphi$、$q$ 节点数的要求：
+\begin{itemize}
+    \item 剪切应力LBB（式~\eqref{eq:ratio-stress}）：$n_q\le n_\varphi$；
+    \item 剪切应变LBB（式~\eqref{eq:ratio-strain}）：$n_q\le n_\varphi$，$n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。
+\end{itemize}
+
+为同时满足这两个约束比要求，本文选择 Meshfree$(w,\varphi)$ + FEM$(q)$ 的离散策略，原因如下：
+\begin{itemize}
+    \item 无网格法（如再生核RK近似）的形函数具有高阶一致性和灵活性，可以独立调控 $w$ 和 $\varphi$ 的节点数；
+    \item 有限元法用于 $q$ 的离散，简单高效；
+    \item 这种组合可以灵活地满足 $n_w\approx\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$ 的要求；
+    \item 与 FEM$(w,\varphi)$ + Meshfree$(q)$ 方案形成互补。
+\end{itemize}
+
+\section{再生核（RK）无网格近似}
+
+再生核近似（Reproducing Kernel, RK）形函数构造：
+% TODO(公式 tag 66): u^h 的 RK 近似
+\begin{equation}
+    u^{h}(\mathbf{x}) = \sum_{I=1}^{n_{\mathrm{RK}}}\Psi_I(\mathbf{x})\,u_I
+    \label{eq:rk-approx}
+\end{equation}
+其中 $\Psi_I(\mathbf{x})$ 为RK形函数：
+% TODO(公式 tag 67): RK 形函数表达式
+\begin{equation}
+    \Psi_I(\mathbf{x}) = \mathbf{H}^{\mathsf{T}}(\mathbf{0})\,\mathbf{M}^{-1}(\mathbf{x})\,\mathbf{H}(\mathbf{x}-\mathbf{x}_I)\,\phi_a(\mathbf{x}-\mathbf{x}_I)
+    \label{eq:rk-shape}
+\end{equation}
+$\mathbf{H}(\mathbf{x})$ 为基函数向量，$\mathbf{M}(\mathbf{x})$ 为矩量矩阵，$\phi_a(\mathbf{x})$ 为核函数。
+
+RK形函数满足 $m$ 阶一致性条件：
+% TODO(公式 tag 68): 一致性条件
+\begin{equation}
+    \sum_{I=1}^{n_{\mathrm{RK}}}\Psi_I(\mathbf{x})\,\mathbf{x}_I^{\alpha} = \mathbf{x}^{\alpha}, \qquad |\alpha|\le m
+    \label{eq:rk-consistency}
+\end{equation}
+$w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
+% TODO(公式 tag 69): w^h、φ^h 的 RK 离散
+\begin{equation}
+    w^{h}(\mathbf{x}) = \sum_{I=1}^{n_w}\Psi_I^{w}(\mathbf{x})\,w_I, \qquad
+    \boldsymbol{\varphi}^{h}(\mathbf{x}) = \sum_{K=1}^{n_\varphi}\Psi_K^{\varphi}(\mathbf{x})\,\boldsymbol{\varphi}_K
+    \label{eq:rk-wphi}
+\end{equation}
+
+\section{有限元近似}
+
+剪切力 $q$ 用标准有限元形函数离散：
+% TODO(公式 tag 70): q^h 的 FEM 离散
+\begin{equation}
+    \mathbf{q}^{h}(\mathbf{x}) = \sum_{R=1}^{n_q}N_R^{q}(\mathbf{x})\,\mathbf{q}_R
+    \label{eq:fe-q}
+\end{equation}
+其中 $N_R^{q}(\mathbf{x})$ 为有限元形函数（如 Tri3、Quad4 等）。
+
+\section{混合离散控制方程}
+
+将式~\eqref{eq:rk-wphi}、\eqref{eq:fe-q} 代入离散 Galerkin 弱形式式~\eqref{eq:weak-phi-h}--\eqref{eq:weak-q-h}，得到矩阵形式：
+% TODO(公式 tag 71): 块矩阵系统（需与第2章三变量弱形式核对一致，见手稿3×3系统）
+\begin{equation}
+    \begin{bmatrix}
+        \mathbf{A} & \mathbf{B}_\varphi^{\mathsf{T}}\\
+        \mathbf{B}_\varphi & \mathbf{0}
+    \end{bmatrix}
+    \begin{Bmatrix}
+        \boldsymbol{\varphi}\\
+        \mathbf{q}
+    \end{Bmatrix}
+    =
+    \begin{Bmatrix}
+        \mathbf{f}_\varphi\\
+        \mathbf{f}_q-\mathbf{B}_w\,\mathbf{w}
+    \end{Bmatrix}
+    \label{eq:block-system}
+\end{equation}
+其中各子矩阵为：
+% TODO(公式 tag 72): A 矩阵
+\begin{equation}
+    \mathbf{A}_{IJ} = a(\Psi_I^{\varphi},\Psi_J^{\varphi}) = \int_\Omega \mathbf{B}_I^{\mathsf{T}}\,\frac{t^{3}}{12}\mathbf{D}\,\mathbf{B}_J\,\mathrm{d}\Omega
+    \label{eq:mat-A}
+\end{equation}
+% TODO(公式 tag 73): B_φ 矩阵
+\begin{equation}
+    (\mathbf{B}_\varphi)_{IR} = b_\varphi(\Psi_I^{\varphi},N_R^{q}) = -\int_\Omega \Psi_I^{\varphi}\cdot N_R^{q}\,\mathrm{d}\Omega
+    \label{eq:mat-Bphi}
+\end{equation}
+% TODO(公式 tag 74): B_w 矩阵
+\begin{equation}
+    (\mathbf{B}_w)_{JR} = b_w(\Psi_J^{w},N_R^{q})
+    = \int_\Omega \nabla\Psi_J^{w}\cdot N_R^{q}\,\mathrm{d}\Omega
+    - \int_{\Gamma_w}\Psi_J^{w}\,\bigl(N_R^{q}\cdot\mathbf{n}\bigr)\,\mathrm{d}\Gamma
+    \label{eq:mat-Bw}
+\end{equation}
+
+\section{节点布置方案}
+
+需同时满足两个约束比要求。以常见有限元单元为例，节点布置可参考表~\ref{tab:node-layout}。
+
+\begin{table}[H]
+    \centering
+    \caption{常见单元的节点布置建议（数值待最终定稿核对）}
+    \label{tab:node-layout}
     \begin{tabular}{lcccc}
-       \toprule
-    & \multicolumn{2}{c}{二次分片实验} & \multicolumn{2}{c}{三次分片实验} \\ \cline{2-5}
-       &$L_2$-Error$\quad$&$H_1$-Error&$L_2$-Error$\quad$&$H_1$-Error\\
-       \midrule
-      RKGSI-Penalty&$1.4\times10^{-7}$&$2.1\times10^{-6}$&$2.0\times10^{-7}$&$2.7\times10^{-6}$\\
-      RKGSI-LM&$3.0\times10^{-4}$&$9.8\times10^{-3}$&$4.2\times10^{-4}$&$9.8\times10^{-3}$\\
-      RKGSI-Nitsche&$3.6\times10^{-15}$&$1.0\times10^{-13}$&$4.6\times10^{-15}$&$9.5\times10^{-14}$\\
-      RKGSI-HR&$3.1\times10^{-15}$&$1.0\times10^{-13}$&$3.5\times10^{-15}$&$7.4\times10^{-14}$\\
-       \bottomrule
+        \toprule
+        位移单元类型 & $n_w$ & $n_\varphi$ & $n_q$（建议） & 说明 \\
+        \midrule
+        Tri3（线性）   & 3  & 6  & 3 & $n_q=n_\varphi/2$，满足 $n_q\le n_\varphi$ \\
+        Tri6（二次）   & 6  & 12 & 6 & $n_q=n_\varphi/2$，满足 \\
+        Quad4（双线性） & 4  & 8  & 4 & $n_q=n_\varphi/2$，满足 \\
+        Quad8（二次）  & 8  & 16 & 8 & $n_q=n_\varphi/2$，满足 \\
+        \bottomrule
     \end{tabular}
-    \end{table}
-三线表Latex代码
-\begin{lstlisting}
+\end{table}
+
+联合布置策略：
+\begin{itemize}
+    \item 位移节点（$w$ 和 $\varphi$）采用无网格节点布置，可独立于 $q$ 的网格；
+    \item $q$ 节点采用有限元网格节点；
+    \item 通过调整无网格节点的密度和分布，精细控制 $n_w$ 和 $n_\varphi$ 的比例。
+\end{itemize}
+
+\section{LBB稳定性的数值验证}
+
+通过广义特征值问题数值测试不同节点配比下的 $\beta_q$ 和 $\beta_\gamma$：
+% TODO(公式 tag 75-76): β_q、β_γ ≈ λ_min(K_q)、λ_min(K_γ)
+\begin{equation}
+    \beta_q = \inf_{w^{h}\in W^{h}}\ \sup_{q^{h}\in Q^{h}}
+    \frac{\bigl|b_w(w^{h},q^{h})\bigr|}{\lVert w^{h}\rVert_W\lVert q^{h}\rVert_Q}
+    \approx \lambda_{\min}(\mathbf{K}_q)
+    \label{eq:num-betaq}
+\end{equation}
+\begin{equation}
+    \beta_\gamma = \inf_{q^{h}\in Q^{h}}\ \sup_{u^{h}\in W^{h}\times\Phi^{h}}
+    \frac{\bigl|b(q^{h},u^{h})\bigr|}{\lVert q^{h}\rVert_Q\lVert u^{h}\rVert_{W\times\Phi}}
+    \approx \lambda_{\min}(\mathbf{K}_\gamma)
+    \label{eq:num-betagamma}
+\end{equation}
+其中 $\lambda_{\min}$ 为对应广义特征值问题的最小特征值。
+
+\section{数值算例}
+
+用经典算例证明理论正确性和方法有效性，每个算例做三组对比：
+\begin{enumerate}
+    \item 传统 $r=3:2$（不满足LBB）；
+    \item 仅满足剪切应变LBB（单约束）；
+    \item 同时满足两个LBB（本文方案）。
+\end{enumerate}
+
+\subsection{固支方板问题}
+
+问题描述：四边固支方板，边长 $L$，厚度 $t$，受均布荷载 $\bar{p}$。
+精确解：Timoshenko 厚板解。
+
+收敛性分析：
+\begin{itemize}
+    \item 中心点挠度 $w_c$ 的收敛曲线；
+    \item 弯矩 $m_{xx}$ 的收敛曲线；
+    \item 剪切力 $q_x$ 的收敛曲线。
+\end{itemize}
+
+应力云图：
+\begin{itemize}
+    \item 方案1（传统 $r=3:2$）：剪切力云图出现明显振荡；
+    \item 方案2（仅满足剪切应变LBB）：挠度收敛但剪切力仍有轻微振荡；
+    \item 方案3（同时满足两个LBB）：挠度和剪切力均光滑收敛。
+\end{itemize}
+
+% TODO(数值算例数据与图待填)：固支方板收敛图、应力云图。
+
+\subsection{Razzaque斜板问题}
+
+问题描述：平行四边形斜板，一边固支、对边简支，受均布荷载。
+关键指标：中心点挠度 $w_c$，与精确解/参考解对比。
+
+应力云图：突出展示单LBB方案出现应力振荡、双LBB方案无振荡的对比。
+
+% TODO(数值算例数据与图待填)：Razzaque 斜板挠度/应力图。
+
+\subsection{简支圆板问题}
+
+问题描述：简支圆板，受均布荷载。
+关键指标：中心点挠度 $w_c$，径向弯矩 $m_{rr}$。
+
+% TODO(数值算例数据与图待填)：简支圆板算例。
+
+\subsection{与 FEM$(w,\varphi)$+Meshfree$(q)$ 方案的对比讨论}
+
+本文方案与 FEM$(w,\varphi)$+Meshfree$(q)$ 方案的对比如表~\ref{tab:vs-wu} 所示。
+
 \begin{table}[H]
-\caption{\textbf{三次基函数无网格法分片实验结果}}
-\centering\label{CHGraphsettings_table_cubic}
-\begin{tabular}{lcccc}
-\toprule
-& \multicolumn{2}{c}{二次分片实验} & \multicolumn{2}{c}{三次分片实验} \\ \cline{2-5}
-&$L_2$-Error$\quad$&$H_1$-Error&$L_2$-Error$\quad$&$H_1$-Error\\
-\midrule
-RKGSI-Penalty&$1.4\times10^{-7}$&$2.1\times10^{-6}$&$2.0\times10^{-7}$&$2.7\times10^{-6}$\\
-RKGSI-LM&$3.0\times10^{-4}$&$9.8\times10^{-3}$&$4.2\times10^{-4}$&$9.8\times10^{-3}$\\
-RKGSI-Nitsche&$3.6\times10^{-15}$&$1.0\times10^{-13}$&$4.6\times10^{-15}$&$9.5\times10^{-14}$\\
-RKGSI-HR&$3.1\times10^{-15}$&$1.0\times10^{-13}$&$3.5\times10^{-15}$&$7.4\times10^{-14}$\\
-\bottomrule
-\end{tabular}
-\end{table}    
-\end{lstlisting}
+    \centering
+    \caption{本文方案与 FE-Meshfree 反配方案的对比}
+    \label{tab:vs-wu}
+    \begin{tabular}{lcc}
+        \toprule
+        对比项 & 反配方案 & 本文 \\
+        \midrule
+        离散方式 & FEM$(w,\varphi)$ + Meshfree$(q)$ & Meshfree$(w,\varphi)$ + FEM$(q)$ \\
+        约束考虑 & 仅剪切应变LBB & 剪切应力LBB + 剪切应变LBB \\
+        约束比   & 单约束比 & 双约束比 \\
+        应力振荡 & 部分算例存在 & 消除 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\chapter{使用Zotero管理参考文献}
-1.下载附件：Better BibTex
-链接：\href{https://zhuanlan.zhihu.com/p/621145900}{Better BibTex安装步骤}
+\section{小结}
 
-2.新建分类建立文件库：references
+\begin{itemize}
+    \item 基于两个最优约束比，设计了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的混合离散方案；
+    \item 给出了节点联合布置策略；
+    \item 通过特征值数值测试验证LBB稳定性；
+    \item 三个经典算例验证了理论正确性；
+    \item 同时满足两个LBB条件的方案在位移和应力方面均表现最优；
+    \item 与 FE-Meshfree 反配方案对比，论证了两种离散策略的互补性。
+\end{itemize}
 
-3.右击该文件库-选择导出分类-以Better BibTex形式导出条目
+% ============================ 第5章 ============================
+\chapter{工程算例}
 
-4.导出条目至与Latex文件相同路径
+% 本节为工程算例正文，内容待后续补充（目前仅保留章标题与占位说明）。
 
-5.在主文件(ef:main.tex)中添加：
-\begin{lstlisting}
-\begin{document}
-    .....
-    \bibliography{references}--导出文献的文件名
-    .....
-\end{document}
-\end{lstlisting}
-eg：基于赫林格-赖斯纳原理的变分一致型伽辽金无网格法\cite{Wu2022,wu2023}相较于传统的本质边界条件施加方法能够有效提高计算精度和计算效率。
+\section{结论与展望}
 
-Latex代码
+\subsection{结论}
 
-\begin{lstlisting}
-eg：基于赫林格-赖斯纳原理的变分一致型伽辽金无网格法\cite{Wu2022,wu2023}相较于传统的本质边界条件施加方法能够有效提高计算精度和计算效率。
-\end{lstlisting}
+\begin{enumerate}
+    \item \textbf{识别了两个独立约束}：通过重新审视Mindlin板三变量混合弱形式，发现式~\eqref{eq:weak-w-h}（剪切应力平衡约束）和式~\eqref{eq:weak-q-h}（剪切应变协调约束）是两个物理本质不同的约束；
+    \item \textbf{建立了两个LBB条件}：分别建立了剪切应力LBB条件和剪切应变LBB条件，并利用完备多项式LBB系数估计器推导了各自的最优约束比：
+    \begin{itemize}
+        \item 剪切应力LBB：$n_q\le n_\varphi$（式~\eqref{eq:ratio-stress}）；
+        \item 剪切应变LBB：$n_q\le n_\varphi$，$n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$（式~\eqref{eq:ratio-strain}）。
+    \end{itemize}
+    \item \textbf{设计了混合离散方法}：基于两个最优约束比，建立了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法；
+    \item \textbf{数值验证}：固支方板、Razzaque 斜板、简支圆板三个算例验证了理论正确性和方法有效性。
+\end{enumerate}
 
-\chapter{\LaTeX 部分所需包介绍}
+\subsection{展望}
 
-
-编写公式-\{amsmath,amsfonts,amssymb,textcomp,ulem\}
-
-绘制表格-\{booktabs,multirow,tabularx,float\}
-
-书写代码-\{listings\}
-
-代码块设置
-\begin{lstlisting}
-\lstset{breaklines,        %自动换行
-        columns=flexible,  %不随便添加空格,只在已经有空格的地方添加空格,
-       }
-\end{lstlisting}
-
-设置PDF文档中超链接的颜色
-\begin{lstlisting}
-\hypersetup{colorlinks=true,linkcolor=black,citecolor=black}
-\end{lstlisting}
-
-
-
-% NOTE 毕业论文致谢部分
-% \include{acknowledgments}
-\appendix
-\chapter{附录}
-附录章节前需添加以下下代码
-\begin{lstlisting}
-    \appendix
-\end{lstlisting}
-
-
-\chapter{参考格式}
-\begin{lstlisting}
-
-\documentclass[engineeringmaster]{hquThesis}-hquThesis是模板文件,包含文本格式,字体设置,文献格式.....
-\usepackage{amsmath,amsfonts,amssymb,textcomp}-公式所需
-\usepackage{booktabs,multirow,tabularx,float}-表格所需
-\hypersetup{colorlinks=true,linkcolor=black,citecolor=black}-设置超链接格式
-\titleZh{XXX}-中文标题
-\titleEn{XXX}-英文标题
-\id{}-学号
-\authorZh{XXX}-作者姓名
-\supervisorZh{XXX}{XXX}-指导教师+职称
-\cosupervisorZh{XXX}{XXX}-合作教师+职称
-\practicevisorZh{XXX}{XXX}-实践教师+职称
-\departmentZh{土木工程学院}
-\fieldZh{结构体系创新与工程应用}
-\majortype{工程硕士}
-\major{土木水利}
-\coverdate{二〇二四年三月XX日}
--封面设置
-\begin{document}-正文开始
-
-\makecover
-\include{decision}-答辩委员会
-\include{declaration}-独创性说明
-\frontmatter
-\include{abstract}-摘要
-\tableofcontents
-\mainmatter
-\include{Introduction}-正文章节
-\include{XXX}
-\include{XXXX}
-\backmatter-页眉另起设置
-\bibliography{references}-引用参考文献条目(.bib)
-\include{acknowledgments}-致谢
-\appendix-附录部分
-\include{appendixA}-附录章节
-\include{appendixB}-附录章节
-\include{cv}-个人简历
-
-\end{document}-结束正文
-\end{lstlisting}
-
+\begin{enumerate}
+    \item \textbf{推广至壳体问题}：将双LBB条件框架推广至壳体理论中的薄膜自锁和弯曲自锁（``三锁合一''）；
+    \item \textbf{非线性问题}：考虑几何非线性和材料非线性；
+    \item \textbf{动力问题}：推广至Mindlin板的动力分析；
+    \item \textbf{自适应分析}：基于LBB系数的自适应节点加密策略。
+\end{enumerate}
 
 \backmatter
-
 
 \bibliography{references}
 
