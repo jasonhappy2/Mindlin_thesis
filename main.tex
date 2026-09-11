@@ -75,55 +75,31 @@
 
 \section{Mindlin板运动学方程}
 
-考察厚度为 $t$ 的板，其计算域为 $\Omega\times[-t/2,\,t/2]$，其中 $\Omega$ 为板中面，$x_\alpha\ (\alpha=1,2)$ 为中面内的坐标，$x_3$ 为厚度方向坐标。在Reissner--Mindlin假设下并忽略中面内的面内位移，板内任意点的位移可表示为
+考察厚度为 $t$ 的板，其计算域为 $\Omega\times[-t/2,\,t/2]$，其中 $\Omega$ 为板中面，$x_\alpha\ (\alpha=1,2)$ 为中面内的坐标，$x_3$ 为厚度方向坐标。在Reissner--Mindlin假设下并忽略中面内的面内位移，板内任意点的位移可由挠度 $w$ 与转角 $\boldsymbol\varphi$ 表示为
 \begin{equation}
-    \left\{
-    \begin{aligned}
-        u_\alpha(\mathbf{x}) &= -x_3\,\varphi_\alpha(x_1,x_2)\\
-        u_3(\mathbf{x}) &= w(x_1,x_2)
-    \end{aligned}
-    \right.
-    ,\quad \alpha=1,2
+    u_\alpha(\mathbf{x}) = -x_3\,\varphi_\alpha(x_1,x_2),\qquad
+    u_3(\mathbf{x}) = w(x_1,x_2)
     \label{eq:kin-displacement}
 \end{equation}
-式中 $\mathbf{x}=(x_1,x_2,x_3)$，$w$ 为挠度，$\varphi_\alpha$ 为转角 $\boldsymbol\varphi$ 的 $\alpha$ 方向分量。
+式中 $\mathbf{x}=(x_1,x_2,x_3)$ 为板内任意点，$w$ 为挠度，$\varphi_\alpha$ 为转角 $\boldsymbol\varphi$ 的 $\alpha$ 方向分量。
 
-相应的无穷小应变分量为
+相应的应变分量、曲率与剪切应变定义为
 \begin{equation}
-    \left\{
     \begin{aligned}
-        \varepsilon_{\alpha\beta} &= \frac{1}{2}(u_{\alpha,\beta}+u_{\beta,\alpha}) = x_3\,\kappa_{\alpha\beta}\\
-        \varepsilon_{\alpha 3} &= \frac{1}{2}\gamma_\alpha\\
-        \varepsilon_{33} &= 0
+        &\varepsilon_{\alpha\beta} = \frac{1}{2}(u_{\alpha,\beta}+u_{\beta,\alpha}) = x_3\,\kappa_{\alpha\beta},\qquad
+        \varepsilon_{\alpha 3} = \frac{1}{2}\gamma_\alpha,\qquad \varepsilon_{33} = 0\\
+        &\boldsymbol\kappa = -\frac{1}{2}\bigl(\nabla\boldsymbol\varphi+\boldsymbol\varphi\nabla\bigr),\qquad
+        \boldsymbol\gamma = \nabla w-\boldsymbol\varphi
     \end{aligned}
-    \right.
     \label{eq:strain}
 \end{equation}
-式中 $\kappa_{\alpha\beta}$ 与 $\gamma_\alpha$ 分别为面内曲率 $\boldsymbol\kappa$ 与剪切应变 $\boldsymbol\gamma$ 的分量，二者定义为
-\begin{equation}
-    \boldsymbol\kappa = -\frac{1}{2}\bigl(\nabla\boldsymbol\varphi+\boldsymbol\varphi\nabla\bigr),\qquad
-    \boldsymbol\gamma = \nabla w-\boldsymbol\varphi
-    \label{eq:kappa-gamma}
-\end{equation}
-
-对各向同性Mindlin板，应力分量由本构关系给出：
-\begin{equation}
-    \left\{
-    \begin{aligned}
-        \sigma_{\alpha\beta} &= D_{\alpha\beta\gamma\eta}\,\varepsilon_{\gamma\eta}\\
-        \sigma_{\alpha 3} &= G\,\gamma_\alpha\\
-        \sigma_{33} &= 0
-    \end{aligned}
-    \right.
-    \label{eq:stress}
-\end{equation}
-式中四阶面内本构张量 $\mathbf{D}$ 与剪切模量 $G$ 可分别由杨氏模量 $E$ 与泊松比 $\nu$ 表示为
+对各向同性Mindlin板，应力分量由本构关系 $\sigma_{\alpha\beta}=D_{\alpha\beta\gamma\eta}\varepsilon_{\gamma\eta}$、$\sigma_{\alpha 3}=G\gamma_\alpha$ 给出，其中四阶面内本构张量 $\mathbf{D}$ 与剪切模量 $G$ 分别为
 \begin{equation}
     \mathbf{D} = \frac{E}{1-\nu^2}\Bigl(\nu\,\mathbf{1}\otimes\mathbf{1}+\frac{1-\nu}{2}\mathbf{I}\Bigr),\qquad
     G=\frac{E}{2(1+\nu)}
     \label{eq:constitutive}
 \end{equation}
-其中 $\mathbf{1}=\delta_{\alpha\beta}\,\mathbf{e}_i\otimes\mathbf{e}_j$ 与 $\mathbf{I}=\bigl(\delta_{\alpha\gamma}\delta_{\beta\eta}+\delta_{\alpha\eta}\delta_{\beta\gamma}\bigr)\mathbf{e}_\alpha\otimes\mathbf{e}_\beta\otimes\mathbf{e}_\gamma\otimes\mathbf{e}_\eta$ 分别为二阶与四阶单位张量，$\delta_{\alpha\beta}$ 为Kronecker符号。
+式中 $\mathbf{1}$ 与 $\mathbf{I}$ 分别为二阶与四阶单位张量。
 
 将应力沿厚度方向积分，可得弯矩合力 $\mathbf{m}$ 与剪力合力 $\mathbf{q}$：
 \begin{equation}
@@ -135,7 +111,7 @@
     \end{aligned}
     \label{eq:resultants}
 \end{equation}
-式中 $k$ 为剪切修正系数，本文取 $k=4/5$。值得注意的是，弯矩合力的几何系数比剪力合力高两阶厚度幂；当板厚减小而外荷载一定时，弯矩合力的量级将远小于剪力合力，从而使剪切应变趋于零，即 $t\to0$ 时 $\boldsymbol\gamma\to\mathbf{0}$。这一由厚度引起的过度约束正是剪切自锁产生的根源。
+式中 $k$ 为剪切修正系数，本文取 $k=4/5$。弯矩合力的几何系数比剪力合力高两阶厚度幂，当板厚减小而外荷载一定时，弯矩合力的量级远小于剪力合力，剪切应变因而趋于零，即 $t\to0$ 时 $\boldsymbol\gamma\to\mathbf{0}$。这一由厚度引起的过度约束正是剪切自锁产生的根源。
 
 相应的板平衡方程与边界条件为
 \begin{equation}
@@ -205,7 +181,7 @@
     \label{eq:forms}
 \end{equation}
 
-进而引入形函数 $N_I^w$、$N_K^\varphi$、$N_R^q$ 及其相应的节点系数，对挠度、转角与剪力三个变量分别作离散近似，即
+进而引入形函数 $N_I^w$、$N_K^\varphi$、$N_R^q$ 及其相应的节点系数，对挠度、转角与剪力分别作离散近似：
 \begin{equation}
     \left\{
     \begin{aligned}
@@ -228,13 +204,7 @@
         \label{eq:weak-q-h}
     \end{align}
 \end{subequations}
-式中 $\mathbf{u}_h=\{w_h,\boldsymbol\varphi_h\}^{\mathrm{T}}$，相应的近似空间为
-\begin{equation}
-    W_h := \mathrm{span}\{N_I^w\}_{I=1}^{n_w},\qquad
-    \Phi_h := \mathrm{span}\{N_K^\varphi\}_{K=1}^{n_\varphi},\qquad
-    Q_h := \mathrm{span}\{N_R^q\}_{R=1}^{n_q}
-    \label{eq:discrete-spaces}
-\end{equation}
+式中 $\mathbf{u}_h=\{w_h,\boldsymbol\varphi_h\}^{\mathrm{T}}$，$W_h$、$\Phi_h$ 与 $Q_h$ 分别为由 $N_I^w$、$N_K^\varphi$ 与 $N_R^q$ 张成的近似空间。
 
 \section{两个独立约束的识别}
 
