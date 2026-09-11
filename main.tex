@@ -303,16 +303,15 @@ Bathe与Dvorkin提出了张量分量混合插值法（Mixed Interpolation of Ten
     \frac{\bigl|b_w(w^{h},q^{h})\bigr|}{\lVert w^{h}\rVert_W\,\lVert q^{h}\rVert_Q} \ge \beta_q
     \label{eq:lbb-betaq}
 \end{equation}
-其中范数取为
-% TODO(公式 tag 33): ‖w‖_W² 定义
+其中 $W$、$\Phi$ 与 $Q$ 上的范数取为
+% TODO(公式 tag 33-34): 三个范数定义（老师 shearlocking.tex 式(2)-(5)）
 \begin{equation}
-    \lVert w\rVert_W^{2} = \int_\Omega \nabla w\cdot(kGt)\cdot\nabla w\,\mathrm{d}\Omega
-    \label{eq:norm-W}
-\end{equation}
-% TODO(公式 tag 34): ‖q‖_Q² 定义
-\begin{equation}
-    \lVert q\rVert_Q^{2} = \int_\Omega q\cdot\frac{1}{kGt}\cdot q\,\mathrm{d}\Omega
-    \label{eq:norm-Q}
+    \begin{aligned}
+        \lVert w\rVert_W^{2} &= \int_\Omega w\,(kGt)\,w\,\mathrm{d}\Omega\\
+        \lVert \boldsymbol\varphi\rVert_\Phi^{2} &= \int_\Omega \boldsymbol\kappa(\boldsymbol\varphi):\frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa(\boldsymbol\varphi)\,\mathrm{d}\Omega\\
+        \lVert \mathbf{q}\rVert_Q^{2} &= \int_\Omega \mathbf{q}\cdot\frac{1}{kGt}\cdot\mathbf{q}\,\mathrm{d}\Omega
+    \end{aligned}
+    \label{eq:norms}
 \end{equation}
 要判断该条件能否成立，需明确约束所对应的算子及其核空间结构。由式~\eqref{eq:constraint-stress} 可知，剪切应力约束的域内部分是 $\nabla\cdot\mathbf{q}+\bar{p}=0$、边界部分是 $\mathbf{q}\cdot\mathbf{n}=\bar{q}_n$（在 $\Gamma_q$ 上），即
 % TODO(公式 tag 35): 剪切应力约束的域内/边界分解
@@ -372,7 +371,7 @@ Bathe与Dvorkin提出了张量分量混合插值法（Mixed Interpolation of Ten
     \frac{\bigl|b(q^{h},u^{h})\bigr|}{\lVert q^{h}\rVert_Q\,\lVert u^{h}\rVert_{W\times\Phi}} \ge \beta_\gamma
     \label{eq:lbb-betagamma}
 \end{equation}
-其中 $b(q,u)=b_\varphi(\varphi,q)+b_w(w,q)$，$\lVert u\rVert_{W\times\Phi}^{2}=\lVert w\rVert_W^{2}+\lVert\varphi\rVert_\Phi^{2}$。
+其中 $b(q,u)=b_\varphi(\varphi,q)+b_w(w,q)$，$\lVert u\rVert_{W\times\Phi}^{2}=\lVert w\rVert_W^{2}+\lVert\varphi\rVert_\Phi^{2}$，各范数定义见式~\eqref{eq:norms}。
 
 展开式~\eqref{eq:weak-q-h}，该约束可写为
 % TODO(公式 tag 51): 展开式
