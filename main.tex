@@ -69,238 +69,212 @@
 % ============================ 第2~5章 ============================
 
 \chapter{Mindlin板混合变分公式与剪切自锁机理}
+\label{ch:mixed}
+
+本章建立Mindlin板的三变量混合变分格式，为后文的约束比分析提供基础。首先给出板的位移、应变、本构关系及平衡方程，说明剪切自锁的产生机理；其次由余能泛函的变分得到三变量伽辽金弱形式及其离散形式；随后通过展开弱形式识别剪切应力约束与剪切应变约束两个独立约束；最后介绍工程中常用的免自锁方法，说明其仅针对剪切应变约束进行构造。
 
 \section{Mindlin板运动学方程}
 
-Reissner--Mindlin假设下，板内任意点的位移场可表示为
-% TODO(公式 tag 1): u_α = -x_3 φ_α, α=1,2
+考察厚度为 $t$ 的板，其计算域为 $\Omega\times[-t/2,\,t/2]$，其中 $\Omega$ 为板中面，$x_\alpha\ (\alpha=1,2)$ 为中面内的坐标，$x_3$ 为厚度方向坐标。在Reissner--Mindlin假设下并忽略中面内的面内位移，板内任意点的位移可表示为
 \begin{equation}
-    u_\alpha(\mathbf{x}, x_3) = -x_3\,\varphi_\alpha(\mathbf{x}), \qquad \alpha = 1,2
-    \label{eq:kin-u-alpha}
+    \left\{
+    \begin{aligned}
+        u_\alpha(\mathbf{x}) &= -x_3\,\varphi_\alpha(x_1,x_2)\\
+        u_3(\mathbf{x}) &= w(x_1,x_2)
+    \end{aligned}
+    \right.
+    ,\quad \alpha=1,2
+    \label{eq:kin-displacement}
 \end{equation}
-% TODO(公式 tag 2): u_3 = w
-\begin{equation}
-    u_3(\mathbf{x}, x_3) = w(\mathbf{x})
-    \label{eq:kin-u-3}
-\end{equation}
-其中 $\mathbf{x}=(x_1,x_2)\in\Omega\subset\mathbb{R}^{2}$ 为板中面坐标，$x_3\in[-t/2,t/2]$ 为厚度方向坐标，$t$ 为板厚，$w$ 为挠度，$\boldsymbol{\varphi}=(\varphi_1,\varphi_2)$ 为截面转角。相应的面内弯曲应变与横向剪切应变为
-% TODO(公式 tag 3): ε_{αβ} = ½(u_{α,β}+u_{β,α}) = x_3 κ_{αβ}
-\begin{equation}
-    \varepsilon_{\alpha\beta} = \tfrac{1}{2}\bigl(u_{\alpha,\beta}+u_{\beta,\alpha}\bigr) = x_3\,\kappa_{\alpha\beta}
-    \label{eq:strain-inplane}
-\end{equation}
-其中曲率张量 $\boldsymbol{\kappa}$ 与剪切应变向量 $\boldsymbol{\gamma}$ 定义为
-% TODO(公式 tag 4): κ = -½(∇φ + φ∇)
-\begin{equation}
-    \boldsymbol{\kappa} = -\tfrac{1}{2}\bigl(\nabla\boldsymbol{\varphi}+\boldsymbol{\varphi}\nabla\bigr)
-    \label{eq:curvature}
-\end{equation}
-横向剪切应变为
-% TODO(公式 tag 5): ε_{α3} = ½(w_{,α} - φ_α)
-\begin{equation}
-    \varepsilon_{\alpha 3} = \tfrac{1}{2}\bigl(w_{,\alpha}-\varphi_\alpha\bigr)
-    \label{eq:shear-strain-comp}
-\end{equation}
-% TODO(公式 tag 6): γ = ∇w - φ
-\begin{equation}
-    \boldsymbol{\gamma} = \nabla w - \boldsymbol{\varphi}
-    \label{eq:gamma}
-\end{equation}
-对均匀各向同性材料，面内应力与横向剪应力分别为
-% TODO(公式 tag 7): σ_{αβ} = D_{αβγδ} ε_{γδ}
-\begin{equation}
-    \sigma_{\alpha\beta} = D_{\alpha\beta\gamma\delta}\,\varepsilon_{\gamma\delta}
-    \label{eq:stress-mid}
-\end{equation}
-% TODO(公式 tag 8): D 弹性张量表达式
-\begin{equation}
-    D_{\alpha\beta\gamma\delta} = \frac{E}{1-\nu^{2}}\left[\frac{\nu}{1-\nu}\,\delta_{\alpha\beta}\delta_{\gamma\delta}
-    + \frac{1}{2}\bigl(\delta_{\alpha\gamma}\delta_{\beta\delta}+\delta_{\alpha\delta}\delta_{\beta\gamma}\bigr)\right]
-    \label{eq:elasticity-D}
-\end{equation}
-% TODO(公式 tag 9): σ_{α3} = G γ_α, G = E/(2(1+ν))
-\begin{equation}
-    \sigma_{\alpha 3} = G\,\gamma_\alpha, \qquad G = \frac{E}{2(1+\nu)}
-    \label{eq:shear-stress}
-\end{equation}
-沿厚度积分，得到弯矩与剪切力合力
-% TODO(公式 tag 10): m_{αβ} = ∫ x_3 σ_{αβ} dx_3 = t³/12 D κ
-\begin{equation}
-    m_{\alpha\beta} = \int_{-t/2}^{t/2}x_3\,\sigma_{\alpha\beta}\,\mathrm{d}x_3 = \frac{t^{3}}{12}\,D_{\alpha\beta\gamma\delta}\,\kappa_{\gamma\delta}
-    \label{eq:moment-resultant}
-\end{equation}
-% TODO(公式 tag 11): q_α = k G t γ_α
-\begin{equation}
-    q_\alpha = \int_{-t/2}^{t/2}\sigma_{\alpha 3}\,\mathrm{d}x_3 = k\,G\,t\,\gamma_\alpha
-    \label{eq:shearforce-resultant}
-\end{equation}
-其中 $k$ 为剪切修正系数，本文取 $k=5/6$。由式~\eqref{eq:moment-resultant} 与式~\eqref{eq:shearforce-resultant} 可见，弯矩与剪切力的量级分别为 $t^{3}$ 与 $t^{1}$；当板厚 $t\to0$ 时，剪切刚度相对弯曲刚度趋于无穷，剪切应变被强制趋零，即 $\boldsymbol{\gamma}\to\mathbf{0}$，这一过度约束正是剪切自锁的根源。
+式中 $\mathbf{x}=(x_1,x_2,x_3)$，$w$ 为挠度，$\varphi_\alpha$ 为转角 $\boldsymbol\varphi$ 的 $\alpha$ 方向分量。
 
-板的平衡微分方程与边界条件为
-% TODO(公式 tag 12): ∇·m - q = 0
+相应的无穷小应变分量为
 \begin{equation}
-    \nabla\cdot\mathbf{m}-\mathbf{q} = \mathbf{0}
-    \label{eq:equil-moment}
+    \left\{
+    \begin{aligned}
+        \varepsilon_{\alpha\beta} &= \frac{1}{2}(u_{\alpha,\beta}+u_{\beta,\alpha}) = x_3\,\kappa_{\alpha\beta}\\
+        \varepsilon_{\alpha 3} &= \frac{1}{2}\gamma_\alpha\\
+        \varepsilon_{33} &= 0
+    \end{aligned}
+    \right.
+    \label{eq:strain}
 \end{equation}
-% TODO(公式 tag 13): ∇·q + p̄ = 0
+式中 $\kappa_{\alpha\beta}$ 与 $\gamma_\alpha$ 分别为面内曲率 $\boldsymbol\kappa$ 与剪切应变 $\boldsymbol\gamma$ 的分量，二者定义为
 \begin{equation}
-    \nabla\cdot\mathbf{q}+\bar{p} = 0
-    \label{eq:equil-shear}
+    \boldsymbol\kappa = -\frac{1}{2}\bigl(\nabla\boldsymbol\varphi+\boldsymbol\varphi\nabla\bigr),\qquad
+    \boldsymbol\gamma = \nabla w-\boldsymbol\varphi
+    \label{eq:kappa-gamma}
 \end{equation}
-其中本质边界条件为 $w=\bar{w}$（在 $\Gamma_w$ 上）、$\boldsymbol{\varphi}=\bar{\boldsymbol{\varphi}}$（在 $\Gamma_\varphi$ 上），自然边界条件为 $m_n=\bar{m}_n$（在 $\Gamma_m$ 上）、$q_n=\bar{q}_n$（在 $\Gamma_q$ 上），且 $\Gamma_w\cup\Gamma_q=\partial\Omega$、$\Gamma_\varphi\cup\Gamma_m=\partial\Omega$。
 
-\section{三变量混合变分格式}
+对各向同性Mindlin板，应力分量由本构关系给出：
+\begin{equation}
+    \left\{
+    \begin{aligned}
+        \sigma_{\alpha\beta} &= D_{\alpha\beta\gamma\eta}\,\varepsilon_{\gamma\eta}\\
+        \sigma_{\alpha 3} &= G\,\gamma_\alpha\\
+        \sigma_{33} &= 0
+    \end{aligned}
+    \right.
+    \label{eq:stress}
+\end{equation}
+式中四阶面内本构张量 $\mathbf{D}$ 与剪切模量 $G$ 可分别由杨氏模量 $E$ 与泊松比 $\nu$ 表示为
+\begin{equation}
+    \mathbf{D} = \frac{E}{1-\nu^2}\Bigl(\nu\,\mathbf{1}\otimes\mathbf{1}+\frac{1-\nu}{2}\mathbf{I}\Bigr),\qquad
+    G=\frac{E}{2(1+\nu)}
+    \label{eq:constitutive}
+\end{equation}
+其中 $\mathbf{1}=\delta_{\alpha\beta}\,\mathbf{e}_i\otimes\mathbf{e}_j$ 与 $\mathbf{I}=\bigl(\delta_{\alpha\gamma}\delta_{\beta\eta}+\delta_{\alpha\eta}\delta_{\beta\gamma}\bigr)\mathbf{e}_\alpha\otimes\mathbf{e}_\beta\otimes\mathbf{e}_\gamma\otimes\mathbf{e}_\eta$ 分别为二阶与四阶单位张量，$\delta_{\alpha\beta}$ 为Kronecker符号。
 
-位移型格式在薄板极限下会因 $\boldsymbol{\gamma}\to\mathbf{0}$ 的约束而产生自锁。为放松该约束，将剪切力 $\mathbf{q}$ 作为独立变量引入，与挠度、转角一同构成三变量混合变分格式。对应的互补能量泛函为
-% TODO(公式 tag 12/框架Pi): Π(u,q) = ½a(φ,φ)+½c(q,q)+b_φ(φ,q)+b_w(w,q)-f_φ-f_w-f_q
+将应力沿厚度方向积分，可得弯矩合力 $\mathbf{m}$ 与剪力合力 $\mathbf{q}$：
 \begin{equation}
-    \Pi(\mathbf{u},\mathbf{q}) = \frac{1}{2}a(\boldsymbol{\varphi},\boldsymbol{\varphi}) + \frac{1}{2}c(\mathbf{q},\mathbf{q})
-    + b_\varphi(\boldsymbol{\varphi},\mathbf{q}) + b_w(w,\mathbf{q})
-    - f_\varphi(\boldsymbol{\varphi}) - f_w(w) - f_q(\mathbf{q})
-    \label{eq:Pi}
+    \mathbf{m} = \int_{-t/2}^{t/2} x_3\,\sigma_{\alpha\beta}\,\mathrm{d}x_3\,\mathbf{e}_\alpha\otimes\mathbf{e}_\beta = \frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa,\qquad
+    \mathbf{q} = k\int_{-t/2}^{t/2}\sigma_{\alpha 3}\,\mathrm{d}x_3\,\mathbf{e}_\alpha = kGt\,\boldsymbol\gamma
+    \label{eq:resultants}
 \end{equation}
-其中各双线性与线性形式定义为
-% TODO(公式 tag 14): a(δφ,φ)
+式中 $k$ 为剪切修正系数，本文取 $k=4/5$。值得注意的是，弯矩合力的几何系数比剪力合力高两阶厚度幂；当板厚减小而外荷载一定时，弯矩合力的量级将远小于剪力合力，从而使剪切应变趋于零，即 $t\to0$ 时 $\boldsymbol\gamma\to\mathbf{0}$。这一由厚度引起的过度约束正是剪切自锁产生的根源。
+
+相应的板平衡方程与边界条件为
 \begin{equation}
-    a(\delta\boldsymbol{\varphi},\boldsymbol{\varphi}) = \int_\Omega \delta\boldsymbol{\kappa}:\frac{t^{3}}{12}\mathbf{D}:\boldsymbol{\kappa}\,\mathrm{d}\Omega
-    \label{eq:form-a}
+    \left\{
+    \begin{aligned}
+        \nabla\cdot\mathbf{m}-\mathbf{q} &= \mathbf{0} &&\text{在 }\Omega\text{ 内}\\
+        \nabla\cdot\mathbf{q}+\bar{p} &= 0 &&\text{在 }\Omega\text{ 内}\\
+        \mathbf{q}\cdot\mathbf{n} &= \bar{q}_n &&\text{在 }\Gamma_q\text{ 上}\\
+        \mathbf{m}\cdot\mathbf{n} &= \bar{\mathbf{m}}_n &&\text{在 }\Gamma_m\text{ 上}\\
+        \boldsymbol\varphi &= \bar{\boldsymbol\varphi} &&\text{在 }\Gamma_\varphi\text{ 上}\\
+        w &= \bar{w} &&\text{在 }\Gamma_w\text{ 上}
+    \end{aligned}
+    \right.
+    \label{eq:governing}
 \end{equation}
-% TODO(公式 tag 15): c(δq,q)
+式中 $\bar{p}$ 为横向荷载，$\bar{q}_n$ 与 $\bar{\mathbf{m}}_n$ 为自然边界 $\Gamma_q$ 与 $\Gamma_m$ 上给定的剪力和弯矩，$\bar{w}$ 与 $\bar{\boldsymbol\varphi}$ 为本质边界 $\Gamma_w$ 与 $\Gamma_\varphi$ 上给定的挠度和转角，$\mathbf{n}$ 为边界外法向单位向量。各边界段满足 $\Gamma_q\cup\Gamma_m=\Gamma_w\cup\Gamma_\varphi=\Gamma$ 与 $\Gamma_w\cap\Gamma_\varphi=\Gamma_q\cap\Gamma_m=\varnothing$，其中 $\Gamma$ 为 $\Omega$ 的边界。
+
+\section{变分}
+
+厚板伽辽金格式通常采用三变量弱形式来缓解自锁问题。为得到相应的弱形式，取如下余能泛函：
 \begin{equation}
-    c(\delta\mathbf{q},\mathbf{q}) = \int_\Omega \delta\mathbf{q}\cdot\frac{1}{kGt}\,\mathbf{q}\,\mathrm{d}\Omega
-    \label{eq:form-c}
+    \begin{aligned}
+        \Pi(\mathbf{u},\mathbf{q}) = &\int_\Omega \frac{t^3}{24}\boldsymbol\kappa:\mathbf{D}:\boldsymbol\kappa\,\mathrm{d}\Omega
+        -\int_\Omega \frac{1}{2kGt}\mathbf{q}\cdot\mathbf{q}\,\mathrm{d}\Omega
+        -\int_\Omega \boldsymbol\varphi\cdot\mathbf{q}\,\mathrm{d}\Omega
+        +\int_{\Gamma_w}\mathbf{q}\cdot\mathbf{n}\,\bar{w}\,\mathrm{d}\Gamma\\
+        &+\int_{\Gamma_m}\boldsymbol\varphi\cdot\bar{\mathbf{m}}_n\,\mathrm{d}\Gamma
+        +\int_{\Gamma_q} w\,(\mathbf{q}\cdot\mathbf{n}-\bar{q}_n)\,\mathrm{d}\Gamma
+        -\int_\Omega w\,(\nabla\cdot\mathbf{q}+\bar{p})\,\mathrm{d}\Omega
+    \end{aligned}
+    \label{eq:functional}
 \end{equation}
-% TODO(公式 tag 16): b_φ(δφ,q)
+式中 $\mathbf{u}$ 表示由挠度与转角构成的位移集，即 $\mathbf{u}=\{w,\boldsymbol\varphi\}$。
+
+对上式进行变分，可得三变量伽辽金弱形式：求 $w\in W$、$\boldsymbol\varphi\in\Phi$、$\mathbf{q}\in Q$，使得
 \begin{equation}
-    b_\varphi(\delta\boldsymbol{\varphi},\mathbf{q}) = -\int_\Omega \delta\boldsymbol{\varphi}\cdot\mathbf{q}\,\mathrm{d}\Omega
-    \label{eq:form-bphi}
+    \left\{
+    \begin{aligned}
+        a_\varphi(\delta\boldsymbol\varphi,\boldsymbol\varphi)+b_\varphi(\delta\boldsymbol\varphi,\mathbf{q}) &= f_\varphi(\delta\boldsymbol\varphi), &&\forall\,\delta\boldsymbol\varphi\in\Phi\\
+        b_w(\delta w,\mathbf{q}) &= f_w(\delta w), &&\forall\,\delta w\in W\\
+        a_q(\delta\mathbf{q},\mathbf{q})+b_q(\delta\mathbf{q},\mathbf{u}) &= f_q(\delta\mathbf{q}), &&\forall\,\delta\mathbf{q}\in Q
+    \end{aligned}
+    \right.
+    \label{eq:weak-form}
 \end{equation}
-% TODO(公式 tag 17): b_w(δw,q)
+式中挠度空间 $W$、转角空间 $\Phi$ 与剪力空间 $Q$ 分别定义为
 \begin{equation}
-    b_w(\delta w,\mathbf{q}) = \int_\Omega \nabla(\delta w)\cdot\mathbf{q}\,\mathrm{d}\Omega
-    - \int_{\Gamma_w}\delta w\,(\mathbf{q}\cdot\mathbf{n})\,\mathrm{d}\Gamma
-    \label{eq:form-bw}
+    W := \bigl\{w\in H^1(\Omega)\mid w=\bar{w}\ \text{在}\ \Gamma_w\ \text{上}\bigr\},\quad
+    \Phi := \bigl\{\boldsymbol\varphi\in[H^1(\Omega)]^2\mid \boldsymbol\varphi=\bar{\boldsymbol\varphi}\ \text{在}\ \Gamma_\varphi\ \text{上}\bigr\},\quad
+    Q := \bigl\{\mathbf{q}\in[L^2(\Omega)]^2\bigr\}
+    \label{eq:spaces}
 \end{equation}
-% TODO(公式 tag 18): f_φ(δφ)
+式~\eqref{eq:weak-form} 中的双线性形式与线性形式分别为
 \begin{equation}
-    f_\varphi(\delta\boldsymbol{\varphi}) = \int_{\Gamma_m}\delta\boldsymbol{\varphi}\cdot\bar{\mathbf{m}}_n\,\mathrm{d}\Gamma
-    \label{eq:form-fphi}
+    \left\{
+    \begin{aligned}
+        a_\varphi(\delta\boldsymbol\varphi,\boldsymbol\varphi) &= \int_\Omega \delta\boldsymbol\kappa:\frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa\,\mathrm{d}\Omega, &
+        a_q(\delta\mathbf{q},\mathbf{q}) &= -\int_\Omega \frac{1}{kGt}\delta\mathbf{q}\cdot\mathbf{q}\,\mathrm{d}\Omega\\
+        b_\varphi(\boldsymbol\varphi,\mathbf{q}) &= -\int_\Omega \boldsymbol\varphi\cdot\mathbf{q}\,\mathrm{d}\Omega, &
+        b_w(w,\mathbf{q}) &= \int_\Omega \nabla w\cdot\mathbf{q}\,\mathrm{d}\Omega-\int_{\Gamma_w} w\,\mathbf{q}\cdot\mathbf{n}\,\mathrm{d}\Gamma\\
+        b_q(\mathbf{q},\mathbf{u}) &= b_w(w,\mathbf{q})+b_\varphi(\boldsymbol\varphi,\mathbf{q}), &
+        f_\varphi(\boldsymbol\varphi) &= -\int_{\Gamma_m}\boldsymbol\varphi\cdot\bar{\mathbf{m}}_n\,\mathrm{d}\Gamma\\
+        f_w(w) &= \int_{\Gamma_q} w\,\bar{q}_n\,\mathrm{d}\Gamma+\int_\Omega w\,\bar{p}\,\mathrm{d}\Omega, &
+        f_q(\mathbf{q}) &= -\int_{\Gamma_w}\mathbf{q}\cdot\mathbf{n}\,\bar{w}\,\mathrm{d}\Gamma
+    \end{aligned}
+    \right.
+    \label{eq:forms}
 \end{equation}
-% TODO(公式 tag 19): f_w(δw)
+
+进而引入形函数 $N_I^w$、$N_K^\varphi$、$N_R^q$ 及其相应的节点系数，对挠度、转角与剪力三个变量分别作离散近似，即
 \begin{equation}
-    f_w(\delta w) = \int_{\Gamma_q}\delta w\,\bar{q}_n\,\mathrm{d}\Gamma + \int_\Omega \delta w\,\bar{p}\,\mathrm{d}\Omega
-    \label{eq:form-fw}
+    \left\{
+    \begin{aligned}
+        w_h(\mathbf{x}) &= \sum_{I=1}^{n_w}N_I^w(\mathbf{x})\,w_I\\
+        \boldsymbol\varphi_h(\mathbf{x}) &= \sum_{K=1}^{n_\varphi}N_K^\varphi(\mathbf{x})\,\boldsymbol\varphi_K\\
+        \mathbf{q}_h(\mathbf{x}) &= \sum_{R=1}^{n_q}N_R^q(\mathbf{x})\,\mathbf{q}_R
+    \end{aligned}
+    \right.
+    \label{eq:approximants}
 \end{equation}
-% TODO(公式 tag 20): f_q(δq)
+将式~\eqref{eq:approximants} 代回式~\eqref{eq:weak-form}，可得离散伽辽金弱形式：求 $w_h\in W_h$、$\boldsymbol\varphi_h\in\Phi_h$、$\mathbf{q}_h\in Q_h$，
+\begin{subequations}
+    \label{eq:weak-form-discrete}
+    \begin{align}
+        a_\varphi(\delta\boldsymbol\varphi_h,\boldsymbol\varphi_h)+b_\varphi(\delta\boldsymbol\varphi_h,\mathbf{q}_h) &= f_\varphi(\delta\boldsymbol\varphi_h), &&\forall\,\delta\boldsymbol\varphi_h\in\Phi_h
+        \label{eq:weak-phi-h}\\
+        b_w(\delta w_h,\mathbf{q}_h) &= f_w(\delta w_h), &&\forall\,\delta w_h\in W_h
+        \label{eq:weak-w-h}\\
+        a_q(\delta\mathbf{q}_h,\mathbf{q}_h)+b_q(\delta\mathbf{q}_h,\mathbf{u}_h) &= f_q(\delta\mathbf{q}_h), &&\forall\,\delta\mathbf{q}_h\in Q_h
+        \label{eq:weak-q-h}
+    \end{align}
+\end{subequations}
+式中 $\mathbf{u}_h=\{w_h,\boldsymbol\varphi_h\}^{\mathrm{T}}$，相应的近似空间为
 \begin{equation}
-    f_q(\delta\mathbf{q}) = -\int_{\Gamma_w}\delta\mathbf{q}\cdot\mathbf{n}\,\bar{w}\,\mathrm{d}\Gamma
-    \label{eq:form-fq}
-\end{equation}
-对泛函 $\Pi$ 取一阶变分并令 $\delta\Pi=0$，得到三变量 Galerkin 弱形式：求 $w\in W$、$\boldsymbol{\varphi}\in\Phi$、$\mathbf{q}\in Q$，使得
-% TODO(公式 tag 13a): a(δφ,φ)+b_φ(δφ,q)=f_φ
-\begin{equation}
-    a(\delta\boldsymbol{\varphi},\boldsymbol{\varphi}) + b_\varphi(\delta\boldsymbol{\varphi},\mathbf{q}) = f_\varphi(\delta\boldsymbol{\varphi}), \quad \forall\,\delta\boldsymbol{\varphi}\in\Phi
-    \label{eq:weak-phi}
-\end{equation}
-% TODO(公式 tag 13b): b_w(δw,q)=f_w
-\begin{equation}
-    b_w(\delta w,\mathbf{q}) = f_w(\delta w), \quad \forall\,\delta w\in W
-    \label{eq:weak-w}
-\end{equation}
-% TODO(公式 tag 13c): b_φ(φ,δq)+b_w(w,δq)=f_q
-\begin{equation}
-    b_\varphi(\boldsymbol{\varphi},\delta\mathbf{q}) + b_w(w,\delta\mathbf{q}) = f_q(\delta\mathbf{q}), \quad \forall\,\delta\mathbf{q}\in Q
-    \label{eq:weak-q}
-\end{equation}
-其中函数空间为
-% TODO(公式 tag 21): W 空间
-\begin{equation}
-    W = \bigl\{w\in H^{1}(\Omega): w=\bar{w}\ \text{on}\ \Gamma_w\bigr\}
-    \label{eq:space-W}
-\end{equation}
-% TODO(公式 tag 22): Φ 空间
-\begin{equation}
-    \Phi = \bigl\{\boldsymbol{\varphi}\in[H^{1}(\Omega)]^{2}: \boldsymbol{\varphi}=\bar{\boldsymbol{\varphi}}\ \text{on}\ \Gamma_\varphi\bigr\}
-    \label{eq:space-Phi}
-\end{equation}
-% TODO(公式 tag 23): Q 空间
-\begin{equation}
-    Q = \bigl\{\mathbf{q}\in[L^{2}(\Omega)]^{2}\bigr\}
-    \label{eq:space-Q}
-\end{equation}
-引入离散近似空间 $W^{h}\subset W$、$\Phi^{h}\subset\Phi$、$Q^{h}\subset Q$，各场近似为
-% TODO(公式 tag 24): 各场离散近似
-\begin{equation}
-    w^{h} = \sum_{I=1}^{n_w}N_I^{w}(\mathbf{x})\,w_I, \qquad
-    \boldsymbol{\varphi}^{h} = \sum_{K=1}^{n_\varphi}N_K^{\varphi}(\mathbf{x})\,\boldsymbol{\varphi}_K, \qquad
-    \mathbf{q}^{h} = \sum_{R=1}^{n_q}N_R^{q}(\mathbf{x})\,\mathbf{q}_R
-    \label{eq:approx-fields}
-\end{equation}
-代入式~\eqref{eq:weak-phi}--\eqref{eq:weak-q}，得离散 Galerkin 弱形式
-% TODO(公式 tag 25a): 离散第一式
-\begin{equation}
-    a(\delta\boldsymbol{\varphi}^{h},\boldsymbol{\varphi}^{h}) + b_\varphi(\delta\boldsymbol{\varphi}^{h},\mathbf{q}^{h}) = f_\varphi(\delta\boldsymbol{\varphi}^{h}), \quad \forall\,\delta\boldsymbol{\varphi}^{h}\in\Phi^{h}
-    \label{eq:weak-phi-h}
-\end{equation}
-% TODO(公式 tag 25b): 离散第二式
-\begin{equation}
-    b_w(\delta w^{h},\mathbf{q}^{h}) = f_w(\delta w^{h}), \quad \forall\,\delta w^{h}\in W^{h}
-    \label{eq:weak-w-h}
-\end{equation}
-% TODO(公式 tag 25c): 离散第三式
-\begin{equation}
-    b_\varphi(\boldsymbol{\varphi}^{h},\delta\mathbf{q}^{h}) + b_w(w^{h},\delta\mathbf{q}^{h}) = f_q(\delta\mathbf{q}^{h}), \quad \forall\,\delta\mathbf{q}^{h}\in Q^{h}
-    \label{eq:weak-q-h}
+    W_h := \mathrm{span}\{N_I^w\}_{I=1}^{n_w},\qquad
+    \Phi_h := \mathrm{span}\{N_K^\varphi\}_{K=1}^{n_\varphi},\qquad
+    Q_h := \mathrm{span}\{N_R^q\}_{R=1}^{n_q}
+    \label{eq:discrete-spaces}
 \end{equation}
 
 \section{两个独立约束的识别}
 
-展开式~\eqref{eq:weak-w-h} 和式~\eqref{eq:weak-q-h}，可以揭示两个约束的物理本质完全不同。
-
-\noindent\textbf{式~\eqref{eq:weak-w-h} —— 剪切应力平衡约束：}
+式~\eqref{eq:weak-form-discrete} 中的第二式与第三式分别对应一个约束，将二者展开即可看出其物理意义。先将第二式写为
 \begin{equation}
-    b_w(\delta w^{h},\mathbf{q}^{h})
-    = \int_\Omega \nabla(\delta w^{h})\cdot\mathbf{q}^{h}\,\mathrm{d}\Omega
-    - \int_{\Gamma_w}\delta w^{h}\,\bigl(\mathbf{q}^{h}\cdot\mathbf{n}\bigr)\,\mathrm{d}\Gamma
-    = f_w(\delta w^{h})
-    \label{eq:bw-expand}
+    b_w(\delta w_h,\mathbf{q}_h)=\int_{\Gamma_q}\delta w_h\,\mathbf{q}_h\cdot\mathbf{n}\,\mathrm{d}\Gamma-\int_\Omega \delta w_h\,\nabla\cdot\mathbf{q}_h\,\mathrm{d}\Omega=f_w(\delta w_h)
+    \label{eq:bw-expanded}
 \end{equation}
-展开后：
-% TODO(公式 tag 26): 展开式
+整理后可得
 \begin{equation}
-    \int_{\Gamma_q}\delta w^{h}\,\bigl(\mathbf{q}^{h}\cdot\mathbf{n}-\bar{q}_n\bigr)\,\mathrm{d}\Gamma
-    - \int_\Omega \delta w^{h}\,\bigl(\nabla\cdot\mathbf{q}^{h}+\bar{p}\bigr)\,\mathrm{d}\Omega = 0
+    \int_{\Gamma_q}\delta w_h\,(\mathbf{q}_h\cdot\mathbf{n}-\bar{q}_n)\,\mathrm{d}\Gamma
+    -\int_\Omega \delta w_h\,(\nabla\cdot\mathbf{q}_h+\bar{p})\,\mathrm{d}\Omega=0
     \label{eq:constraint-stress}
 \end{equation}
-上式表明，剪切应力约束由两部分组成：其一为域内剪切力所应满足的散度平衡条件 $\nabla\cdot\mathbf{q}^{h}+\bar{p}=0$，其二为自然边界 $\Gamma_q$ 上的剪切力条件 $\mathbf{q}^{h}\cdot\mathbf{n}=\bar{q}_n$，二者共同反映了剪切力的力平衡关系。由此可见，该约束在本质上是剪切力的力平衡条件。
+式中第一项与第二项分别对应于自然边界 $\Gamma_q$ 上的剪力条件与域内的剪力散度条件，即 $\mathbf{q}_h\cdot\mathbf{n}=\bar{q}_n$ 与 $\nabla\cdot\mathbf{q}_h+\bar{p}=0$。二者共同反映了剪力的力平衡关系，因此该约束本质上是一个力的平衡条件。
 
-\noindent\textbf{式~\eqref{eq:weak-q-h} —— 剪切应变协调约束：}
-% TODO(公式 tag 27): 展开式
+类似地，将第三式中的约束项展开为
 \begin{equation}
-    b_\varphi(\boldsymbol{\varphi}^{h},\delta\mathbf{q}^{h}) + b_w(w^{h},\delta\mathbf{q}^{h})
-    = \int_\Omega \delta\mathbf{q}^{h}\cdot\bigl(\nabla w^{h}-\boldsymbol{\varphi}^{h}\bigr)\,\mathrm{d}\Omega
-    - \int_{\Gamma_w}\delta\mathbf{q}^{h}\cdot\mathbf{n}\,\bigl(w^{h}-\bar{w}\bigr)\,\mathrm{d}\Gamma = 0
+    \begin{aligned}
+        b_q(\delta\mathbf{q}_h,\mathbf{u}_h) &= b_w(w_h,\delta\mathbf{q}_h)+b_\varphi(\boldsymbol\varphi_h,\delta\mathbf{q}_h)\\
+        &=\int_\Omega \delta\mathbf{q}_h\cdot(\nabla w_h-\boldsymbol\varphi_h)\,\mathrm{d}\Omega
+        -\int_{\Gamma_w}\delta\mathbf{q}_h\cdot\mathbf{n}\,(w_h-\bar{w})\,\mathrm{d}\Gamma=0
+    \end{aligned}
     \label{eq:constraint-strain}
 \end{equation}
-上式表明，剪切应变约束由两部分组成：其一为域内剪切应变应满足的协调条件 $\nabla w^{h}-\boldsymbol{\varphi}^{h}=\mathbf{0}$，即剪切应变 $\boldsymbol{\gamma}=\mathbf{0}$；其二为本质边界 $\Gamma_w$ 上的挠度条件 $w^{h}=\bar{w}$。二者共同反映了板的变形协调关系，因此该约束在本质上是剪切应变的变形协调条件。
+式中第一项对应于域内的剪切应变协调条件 $\nabla w_h-\boldsymbol\varphi_h=\mathbf{0}$，即 $\boldsymbol\gamma=\mathbf{0}$；第二项对应于本质边界 $\Gamma_w$ 上的挠度条件 $w_h=\bar{w}$。二者共同反映了板的变形协调关系，因此该约束本质上是一个变形协调条件。
 
-由上可见，式~\eqref{eq:weak-w-h} 与式~\eqref{eq:weak-q-h} 是两个物理本质不同的约束，因而分别需要各自的LBB稳定性条件。值得注意的是，传统免自锁方法大多仅针对式~\eqref{eq:weak-q-h} 所示的剪切应变约束进行构造，而对式~\eqref{eq:weak-w-h} 中剪切应力约束的稳定性关注甚少，这也正是部分方案在满足单一LBB条件后剪切力仍出现振荡的原因所在。
+由式~\eqref{eq:constraint-stress} 与式~\eqref{eq:constraint-strain} 可见，式~\eqref{eq:weak-w-h} 与式~\eqref{eq:weak-q-h} 所对应的两个约束在物理本质上并不相同，因而分别需要各自的LBB稳定性条件。值得注意的是，已有工作大多只针对式~\eqref{eq:weak-q-h} 所示的剪切应变约束进行构造，而对式~\eqref{eq:weak-w-h} 中剪切应力约束的稳定性关注甚少，这也是部分方案在满足单一LBB条件后剪力仍出现振荡的原因所在。
 
-\section{免自锁问题的常用方法}
+\section{免自锁问题的一些常用方法}
 
-由上一节可知，剪切自锁在混合弱形式中表现为剪切应力约束（式~\eqref{eq:weak-w-h}）与剪切应变约束（式~\eqref{eq:weak-q-h}）两个独立约束。工程中常用的免剪切自锁单元，大多只针对剪切应变约束进行构造，下面以离散剪切间隙法（DSG）与张量分量混合插值法（MITC）两类代表性方法说明。
+由上一节可知，剪切自锁在混合弱形式中表现为剪切应力约束与剪切应变约束两个独立约束。工程中常用的免自锁单元大多只针对剪切应变约束进行构造，其中具有代表性的有离散剪切间隙法与张量分量混合插值法，下面分别说明。
 
 \subsection{离散剪切间隙法（DSG）}
 
-Bletzinger、Bischoff 与 Ramm 提出离散剪切间隙法（Discrete Shear Gap, DSG）。该方法不引入独立的剪切力变量，而是沿单元边定义``剪切间隙''，据此重构剪切应变场，使剪切应变不再由位移梯度直接插值，从而避免薄板极限下的过度约束。DSG 实现简单、便于嵌入标准位移元，但本质上只放松了剪切应变约束（式~\eqref{eq:weak-q-h}），并未涉及剪切应力约束（式~\eqref{eq:weak-w-h}）。
+Bletzinger、Bischoff与Ramm提出了离散剪切间隙法（Discrete Shear Gap, DSG）。该方法并不将剪力作为独立变量引入，而是在单元边上定义``剪切间隙''，据此重构剪切应变场，使剪切应变不再由位移梯度直接插值，从而避免薄板极限下的过度约束。DSG实现简便、易于嵌入标准位移元，但其本质上只放松了剪切应变约束（式~\eqref{eq:weak-q-h}），并未涉及剪切应力约束（式~\eqref{eq:weak-w-h}）。
 
 \subsection{张量分量混合插值法（MITC）}
 
-Bathe 与 Dvorkin 提出张量分量混合插值法（Mixed Interpolation of Tensorial Components, MITC），对横向剪切应变采用独立的插值，并在单元内的绑定点（tying points）处与位移插值得到的剪切应变相连，使剪切应变的分布阶次低于位移插值。MITC 单元通过了 inf--sup 检验，是应用最广泛的免剪切自锁单元之一；但同样地，MITC 也只处理了剪切应变约束，未考虑剪切应力约束。
+Bathe与Dvorkin提出了张量分量混合插值法（Mixed Interpolation of Tensorial Components, MITC）。该方法对横向剪切应变采用独立的插值，并在单元内的绑定点（tying points）处与位移插值所得的剪切应变相协调，使剪切应变的分布阶次低于位移插值，从而在薄板极限下仍能通过inf-sup检验。MITC是应用最广泛的免自锁单元之一，但同样只处理了剪切应变约束，未考虑剪切应力约束。
 
 \section{小结}
 
-本章建立了 Mindlin 板的三变量混合弱形式，指出剪切自锁对应剪切应力约束与剪切应变约束两个独立约束；常用的 DSG、MITC 单元仅处理了剪切应变约束。第~\ref{ch:lbb}~章将分别为两个约束建立 LBB 稳定性条件并推导最优约束比。
+本章建立了Mindlin板的三变量混合变分格式。由余能泛函的变分得到了包含挠度、转角与剪力的伽辽金弱形式，并通过展开其离散形式识别出剪切应力约束与剪切应变约束两个物理本质不同的约束：前者对应剪力的力平衡条件，后者对应剪切应变的变形协调条件。工程中常用的DSG与MITC单元仅针对剪切应变约束进行构造，尚不能保证剪力解的稳定。第~\ref{ch:lbb}~章将分别针对这两个约束建立LBB稳定性条件，并推导相应的最优约束比。
 
 % ============================ 第3章 ============================
 \chapter{剪切自锁问题的LBB稳定性条件与最优约束比}
