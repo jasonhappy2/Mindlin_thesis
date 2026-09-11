@@ -1,7 +1,7 @@
 %! TEX program = xelatex
 %! TEX encoding = UTF-8 Unicode
 
-% 参考文献格式对齐课题组（师兄师姐两篇）：关闭 DOI/URL，条目用半角标点
+% 参考文献格式：关闭 DOI/URL，条目用半角标点
 \PassOptionsToPackage{doi=false,url=false,bibpunct=half}{gbt7714}
 
 \documentclass[internationalmaster]{hquThesis}
@@ -27,8 +27,6 @@
 
 \mainmatter
 
-% ============================ 正文从这里开始 ============================
-% 论文正文第1~5章全部写在 main.tex 内（不另开文件）。
 
 \chapter{引言}
 
@@ -68,7 +66,6 @@
 
 本文后续章节安排如下：第2章建立Mindlin板的三变量混合弱形式，并识别剪切应力与剪切应变两个独立约束；第3章在泛函分析框架下推导两个约束的LBB稳定系数估计式与最优约束比；第4章依据最优约束比构造无网格--有限元混合离散方法并给出数值验证；第5章给出工程算例，并在章末给出结论与展望。
 
-% ============================ 第2~5章 ============================
 
 \chapter{Mindlin板混合变分公式与剪切自锁机理}
 \label{ch:mixed}
@@ -256,14 +253,12 @@
 
 本章建立了Mindlin板的三变量混合变分格式。由余能泛函的变分得到了包含挠度、转角与剪力的伽辽金弱形式，并通过展开其离散形式识别出剪切应力约束与剪切应变约束两个物理本质不同的约束：前者对应剪力的力平衡条件，后者对应剪切应变的变形协调条件。工程中常用的DSG与MITC单元仅针对剪切应变约束进行构造，尚不能保证剪力解的稳定。第~\ref{ch:lbb}~章将分别针对这两个约束建立LBB稳定性条件，并推导相应的最优约束比。
 
-% ============================ 第3章 ============================
 \chapter{剪切自锁问题的LBB稳定性条件与最优约束比}
 \label{ch:lbb}
 
 \section{LBB稳定性条件的一般框架}
 
 考虑一般约束问题：求 $u\in U$ 使得
-% TODO(公式 tag 28): b(p,u) = g(p), ∀p∈P
 \begin{equation}
     b(p,u) = g(p), \quad \forall\,p\in P
     \label{eq:constraint-problem}
@@ -271,7 +266,6 @@
 其中 $b:U\times P\to\mathbb{R}$ 为双线性形式。
 
 引入离散空间 $U^{h}\subset U$、$P^{h}\subset P$，LBB条件要求存在常数 $\beta>0$ 使得
-% TODO(公式 tag 29): inf-sup 定义
 \begin{equation}
     \inf_{p^{h}\in P^{h}}\ \sup_{u^{h}\in U^{h}}
     \frac{\bigl|b(p^{h},u^{h})\bigr|}{\lVert p^{h}\rVert_P\,\lVert u^{h}\rVert_U} \ge \beta
@@ -281,7 +275,6 @@
 \section{基于完备多项式空间的LBB系数估计}
 
 针对上述约束问题，记 $P:U\to P$ 为双线性形式 $b$ 对应的线性算子，$P_h:U^{h}\to P^{h}$ 为 $P$ 在 $P^{h}$ 上的正交投影算子，并引入与 $U^{h}$ 同维的完备多项式空间 $U^{n_u}\subset U$。可以证明，LBB 系数 $\beta$ 满足如下估计式
-% TODO(公式 tag 30): 估计式 β ≤ inf sup ‖Pu‖/‖u‖ + O(h)
 \begin{equation}
     \beta \le \inf_{U'\subset U^{n_u}\setminus\ker P_h I_h}\ \sup_{u\in U'}
     \frac{\lVert Pu\rVert_P}{\lVert u\rVert_U} + O(h)
@@ -292,7 +285,6 @@
 上式表明，LBB 系数 $\beta$ 是否非零（即LBB条件是否满足）仅取决于多项式空间中 $\ker P$ 与像空间的维数关系，而与离散尺寸 $h$ 无关，因为 $O(h)$ 项在 $h\to0$ 时趋于消失。
 
 为便于理解，这里给出上述估计式的推导思路：记 $P$ 为双线性形式 $b$ 对应的线性算子，满足 $b(p,u)=(p,Pu)$。将LBB条件改写为关于投影算子 $P_h$ 的形式，并把下确界限定在 $\operatorname{Im}P_h$ 上；对固定的 $p^{h}$，取 $U'=\{u^{h}\in U^{h}\mid P_h u^{h}=p^{h}\}$，由 Cauchy--Schwarz 不等式知等号成立，得到
-% TODO(公式 tag 31): 投影算子形式
 \begin{equation}
     \beta \le \inf_{U'\subset U^{h}\setminus\ker P_h}\ \sup_{u^{h}\in U'}
     \frac{\lVert P_h u^{h}\rVert_P}{\lVert u^{h}\rVert_U}
@@ -303,14 +295,12 @@
 \section{剪切应力约束的LBB条件与最优约束比}
 
 对剪切应力约束，其离散LBB条件要求存在常数 $\beta_q>0$，使得
-% TODO(公式 tag 32): inf_{w^h∈W^h} sup_{q^h∈Q^h} |b_w(w^h,q^h)|/(‖w^h‖_W‖q^h‖_Q) ≥ β_q
 \begin{equation}
     \inf_{w^{h}\in W^{h}}\ \sup_{q^{h}\in Q^{h}}
     \frac{\bigl|b_w(w^{h},q^{h})\bigr|}{\lVert w^{h}\rVert_W\,\lVert q^{h}\rVert_Q} \ge \beta_q
     \label{eq:lbb-betaq}
 \end{equation}
 其中 $W$、$\Phi$ 与 $Q$ 上的范数取为
-% TODO(公式 tag 33-34): 三个范数定义（老师 shearlocking.tex 式(2)-(5)）
 \begin{equation}
     \begin{aligned}
         \lVert w\rVert_W^{2} &= \int_\Omega w\,(kGt)\,w\,\mathrm{d}\Omega\\
@@ -320,14 +310,12 @@
     \label{eq:norms}
 \end{equation}
 要判断该条件能否成立，需明确约束所对应的算子及其核空间结构。由式~\eqref{eq:constraint-stress} 可知，剪切应力约束的域内部分是 $\nabla\cdot\mathbf{q}+\bar{p}=0$、边界部分是 $\mathbf{q}\cdot\mathbf{n}=\bar{q}_n$（在 $\Gamma_q$ 上），即
-% TODO(公式 tag 35): 剪切应力约束的域内/边界分解
 \begin{equation}
     \int_{\Gamma_q}\delta w^{h}\,\bigl(\mathbf{q}^{h}\cdot\mathbf{n}-\bar{q}_n\bigr)\,\mathrm{d}\Gamma
     - \int_\Omega \delta w^{h}\,\bigl(\nabla\cdot\mathbf{q}^{h}+\bar{p}\bigr)\,\mathrm{d}\Omega = 0
     \label{eq:stress-op-decomp}
 \end{equation}
 据此定义算子 $\mathbf{W}:Q\to W$：
-% TODO(公式 tag 36): 算子 W（域内 -∇·，边界 n·，含迹算子）
 \begin{equation}
     \mathbf{W} = \begin{cases}
         \mathbf{W}_\Omega = -\nabla\cdot & \text{在 }\Omega\text{ 内}\\
@@ -336,32 +324,28 @@
     \label{eq:op-W}
 \end{equation}
 其中 $T_{\Gamma_q}:Q\to Q|_{\Gamma_q}$ 为迹算子。将该算子代入上文 LBB 估计式，得
-% TODO(公式 tag 37): β_q 估计式
 \begin{equation}
     \beta_q \le \inf_{W'\subset W^{n_w}\setminus\ker\mathbf{W}_h I_h^{w}}\ \sup_{w\in W'}
     \frac{\lVert \mathbf{W} w\rVert_Q}{\lVert w\rVert_W} + O(h)
     \label{eq:betaq-estimate}
 \end{equation}
 于是LBB条件成立的必要条件是
-% TODO(公式 tag 38): 必要性维数条件
 \begin{equation}
     \dim\bigl(W^{n_w}\setminus\ker\mathbf{W}_h I_h^{w}\bigr)
     \le \dim\bigl(W^{n_w}\setminus\ker\mathbf{W}\bigr)
     \label{eq:nec-dim-stress}
 \end{equation}
 左端维数方面，由 $\mathbf{W}_h I_h^{w}$ 的像空间与 $Q^{h}$ 同构，有
-% TODO(公式 tag 39): dim(...) = dim(Im W_h) = dim Q^h = 2n_q
 \begin{equation}
     \dim\bigl(W^{n_w}\setminus\ker\mathbf{W}_h I_h^{w}\bigr)
     = \dim(\operatorname{Im}\mathbf{W}_h) = \dim Q^{h} = 2n_q
     \label{eq:lhs-dim-stress}
 \end{equation}
 右端维数方面，$\ker\mathbf{W}=\ker\mathbf{W}_\Omega\cap\ker\mathbf{W}_{\Gamma_q}T_{\Gamma_q}$。由 De Morgan 定理和 Grassmann 定理，将 $Q^{n_q}\setminus\ker\mathbf{W}$ 分解为域内与边界两部分：先看域内部分，$\mathbf{W}_\Omega=-\nabla\cdot$ 为散度算子，作用于二阶张量多项式空间 $Q^{n_q}$（维数 $2n_q$）上，其像空间中的多项式比 $Q^{n_q}$ 低一阶；再看边界部分，利用迹算子不改变像空间维数的性质。合并得右端维数的综合估计
-% TODO(公式 tag 42-47): dim(Im W_Ω)、dim(Q^{n_q}\setminus\ker W_{Γ_q}T_{Γ_q}) 与综合界（⌊⌋/⌈⌉ 与 ⟨·⟩ 记号）
+% 待补：dim(Im W_Ω)、dim(Q^{n_q}\setminus\ker W_{Γ_q}T_{Γ_q}) 与综合界（⌊⌋/⌈⌉ 与 ⟨·⟩ 记号）
 % 将左右两端维数代入必要性条件，并注意到边界自由度远小于域内自由度，可得
-% TODO(公式 tag 48): 2n_q ≤ ⟨⌊[n_q]⌋-1⟩
+% 待补：2n_q ≤ ⟨⌊[n_q]⌋-1⟩
 利用 $n_q$ 与 $[n_q]$ 的关系 $n_q=\langle[n_q]\rangle=([n_q]+1)([n_q]+2)/2$，最终得到剪切应力约束的最优约束比
-% TODO(公式 tag 49): 结论 n_q ≤ n_φ
 \begin{equation}
     n_q \le n_\varphi
     \label{eq:ratio-stress}
@@ -371,7 +355,6 @@
 \section{剪切应变约束的LBB条件与最优约束比}
 
 对剪切应变约束，其离散LBB条件要求存在常数 $\beta_\gamma>0$，使得
-% TODO(公式 tag 50): inf_{q^h∈Q^h} sup_{u^h∈W^h×Φ^h} |b(q^h,u^h)|/(‖q^h‖_Q‖u^h‖_{W×Φ}) ≥ β_γ
 \begin{equation}
     \inf_{q^{h}\in Q^{h}}\ \sup_{u^{h}\in W^{h}\times\Phi^{h}}
     \frac{\bigl|b(q^{h},u^{h})\bigr|}{\lVert q^{h}\rVert_Q\,\lVert u^{h}\rVert_{W\times\Phi}} \ge \beta_\gamma
@@ -380,7 +363,6 @@
 其中 $b(q,u)=b_\varphi(\varphi,q)+b_w(w,q)$，$\lVert u\rVert_{W\times\Phi}^{2}=\lVert w\rVert_W^{2}+\lVert\varphi\rVert_\Phi^{2}$，各范数定义见式~\eqref{eq:norms}。
 
 展开式~\eqref{eq:weak-q-h}，该约束可写为
-% TODO(公式 tag 51): 展开式
 \begin{equation}
     b(\delta q^{h},u^{h})
     = \int_\Omega \delta q^{h}\cdot\bigl(\nabla w^{h}-\varphi^{h}\bigr)\,\mathrm{d}\Omega
@@ -388,7 +370,6 @@
     \label{eq:strain-op-decomp}
 \end{equation}
 据此定义算子 $\mathbf{Q}:W\times\Phi\to Q$：
-% TODO(公式 tag 52): 算子 Q（域内 {∇,-}，边界 -n，含迹算子）
 \begin{equation}
     \mathbf{Q} = \begin{cases}
         \mathbf{Q}_\Omega = \{\nabla,\,-\} & \text{在 }\Omega\text{ 内}\\
@@ -397,32 +378,28 @@
     \label{eq:op-Q}
 \end{equation}
 其中 $T_w:W\times\Phi\to W|_{\Gamma_w}$ 为迹算子。将该算子代入上文 LBB 估计式，得
-% TODO(公式 tag 53): β_γ 估计式
 \begin{equation}
     \beta_\gamma \le \inf_{U'\subset W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}_h I_h^{u}}\ \sup_{u\in U'}
     \frac{\lVert \mathbf{Q} u\rVert_Q}{\lVert u\rVert_{W\times\Phi}} + O(h)
     \label{eq:betagamma-estimate}
 \end{equation}
 于是LBB条件成立的必要条件是
-% TODO(公式 tag 54): 必要性维数条件
 \begin{equation}
     \dim\bigl(W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}_h I_h^{u}\bigr)
     \le \dim\bigl(W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}\bigr)
     \label{eq:nec-dim-strain}
 \end{equation}
 左端维数方面，同样有
-% TODO(公式 tag 55): dim(...) = dim(Im Q_h) = dim Q^h = 2n_q
 \begin{equation}
     \dim\bigl(W^{n_w}\times\Phi^{n_\varphi}\setminus\ker\mathbf{Q}_h I_h^{u}\bigr)
     = \dim(\operatorname{Im}\mathbf{Q}_h) = \dim Q^{h} = 2n_q
     \label{eq:lhs-dim-strain}
 \end{equation}
 右端维数方面，$\ker\mathbf{Q}=\ker\mathbf{Q}_\Omega\cap\ker\mathbf{Q}_{\Gamma_w}T_w$，同样分解为域内与边界两部分。先看域内部分：$\ker\mathbf{Q}_\Omega$ 满足 $\nabla w=\varphi$，即 $w$ 比 $\varphi$ 高一阶，由 $W^{n_w}\times\Phi^{n_\varphi}$ 的单项式基展开可得 $\dim\ker\mathbf{Q}_\Omega=\min(n_w,n_s)$，其中 $n_s$ 为比 $\Phi^{n_\varphi}$ 高一阶的单项式个数；再看边界部分，$\ker\mathbf{Q}_{\Gamma_w}=\emptyset$（$\mathbf{Q}_{\Gamma_w}=-\mathbf{n}$ 无非零核）。合并得右端维数的综合估计
-% TODO(公式 tag 58-63): 基展开、dim ker、n_s 界、边界维数与综合界
+% 待补：基展开、dim ker、n_s 界、边界维数与综合界
 % 将左右两端维数代入必要性条件，并注意到边界自由度远小于域内自由度，可得
-% TODO(公式 tag 64): 2n_q ≤ n_w+2n_φ-min(n_w,n_s)
+% 待补：2n_q ≤ n_w+2n_φ-min(n_w,n_s)
 当 $n_w\ge n_s$ 时，$2n_q\le 2n_\varphi$，即 $n_q\le n_\varphi$；当 $n_w<n_s$ 时，$2n_q\le n_w+2n_\varphi-n_w=2n_\varphi$，同样得 $n_q\le n_\varphi$。对于 $w$ 的最优约束比，需满足 $n_w\approx n_s=\langle[n_q]\rangle$，即剪切应变约束的最优约束比为
-% TODO(公式 tag 65): 结论 n_q ≤ n_φ 且 n_w^opt = ⟨⌊[n_q]⌋-1⟩
 \begin{equation}
     n_q \le n_\varphi,\qquad n_w^{\mathrm{opt}} = \bigl\langle\lfloor [n_q]\rfloor-1\bigr\rangle
     \label{eq:ratio-strain}
@@ -434,13 +411,12 @@
 综合上述分析可知，两个独立约束分别对应两套LBB稳定性判据与最优约束比。其中，剪切应力约束对应式~\eqref{eq:weak-w-h}，其本质是剪切力的力平衡条件，相应算子为 $\mathbf{W}=(-\nabla\cdot,\;\mathbf{n}\cdot)$，由域内散度与自然边界约束共同构成，该约束对剪切力节点数提出的要求是 $n_q\le n_\varphi$。剪切应变约束则对应式~\eqref{eq:weak-q-h}，其本质是剪切应变的变形协调条件，相应算子为 $\mathbf{Q}=(\nabla w-\varphi,\;-\mathbf{n}\cdot)$，由于该约束要求挠度场较转角场高一阶，故除 $n_q\le n_\varphi$ 外，还要求挠度节点数满足 $n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。可见两个约束在物理本质、算子结构与最优约束比上均不相同，须分别予以满足，才能同时保证剪切力与挠度解的稳定性。
 
 \section{数值验证（特征值问题）}
-% 本节内容待填：通过广义特征值问题数值测试不同节点配比下的 \beta_q 与 \beta_\gamma（收敛率/特征值验证，见第4章）。
+% 待补：通过广义特征值问题数值测试不同节点配比下的 \beta_q 与 \beta_\gamma（收敛率/特征值验证，见第4章）。
 
 \section{小结}
 
 本章在泛函分析框架下分别推导了剪切应力约束与剪切应变约束的LBB稳定系数估计式。结果表明，剪切自锁涉及两个相互独立的约束，各自需要相应的LBB条件：剪切应力约束要求 $n_q\le n_\varphi$，而剪切应变约束除 $n_q\le n_\varphi$ 外还要求 $n_w=\bigl\langle\lfloor[n_q]\rfloor-1\bigr\rangle$。上述两个最优约束比构成了后续构造免自锁混合离散方法的理论基础。
 
-% ============================ 第4章 ============================
 \chapter{免剪切自锁的无网格有限元混合离散方法}
 
 \section{离散策略的选择}
@@ -450,13 +426,11 @@
 \section{再生核（RK）无网格近似}
 
 再生核近似（Reproducing Kernel, RK）形函数构造：
-% TODO(公式 tag 66): u^h 的 RK 近似
 \begin{equation}
     u^{h}(\mathbf{x}) = \sum_{I=1}^{n_{\mathrm{RK}}}\Psi_I(\mathbf{x})\,u_I
     \label{eq:rk-approx}
 \end{equation}
 其中 $\Psi_I(\mathbf{x})$ 为RK形函数：
-% TODO(公式 tag 67): RK 形函数表达式
 \begin{equation}
     \Psi_I(\mathbf{x}) = \mathbf{H}^{\mathsf{T}}(\mathbf{0})\,\mathbf{M}^{-1}(\mathbf{x})\,\mathbf{H}(\mathbf{x}-\mathbf{x}_I)\,\phi_a(\mathbf{x}-\mathbf{x}_I)
     \label{eq:rk-shape}
@@ -464,13 +438,11 @@
 $\mathbf{H}(\mathbf{x})$ 为基函数向量，$\mathbf{M}(\mathbf{x})$ 为矩量矩阵，$\phi_a(\mathbf{x})$ 为核函数。
 
 RK形函数满足 $m$ 阶一致性条件：
-% TODO(公式 tag 68): 一致性条件
 \begin{equation}
     \sum_{I=1}^{n_{\mathrm{RK}}}\Psi_I(\mathbf{x})\,\mathbf{x}_I^{\alpha} = \mathbf{x}^{\alpha}, \qquad |\alpha|\le m
     \label{eq:rk-consistency}
 \end{equation}
 $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
-% TODO(公式 tag 69): w^h、φ^h 的 RK 离散
 \begin{equation}
     w^{h}(\mathbf{x}) = \sum_{I=1}^{n_w}\Psi_I^{w}(\mathbf{x})\,w_I, \qquad
     \boldsymbol{\varphi}^{h}(\mathbf{x}) = \sum_{K=1}^{n_\varphi}\Psi_K^{\varphi}(\mathbf{x})\,\boldsymbol{\varphi}_K
@@ -480,7 +452,6 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 \section{有限元近似}
 
 剪切力 $q$ 用标准有限元形函数离散：
-% TODO(公式 tag 70): q^h 的 FEM 离散
 \begin{equation}
     \mathbf{q}^{h}(\mathbf{x}) = \sum_{R=1}^{n_q}N_R^{q}(\mathbf{x})\,\mathbf{q}_R
     \label{eq:fe-q}
@@ -490,7 +461,6 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 \section{混合离散控制方程}
 
 将式~\eqref{eq:rk-wphi}、\eqref{eq:fe-q} 代入离散 Galerkin 弱形式式~\eqref{eq:weak-phi-h}--\eqref{eq:weak-q-h}，得到矩阵形式：
-% TODO(公式 tag 71): 块矩阵系统（需与第2章三变量弱形式核对一致，见手稿3×3系统）
 \begin{equation}
     \begin{bmatrix}
         \mathbf{A} & \mathbf{B}_\varphi^{\mathsf{T}}\\
@@ -508,17 +478,14 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{eq:block-system}
 \end{equation}
 其中各子矩阵为：
-% TODO(公式 tag 72): A 矩阵
 \begin{equation}
     \mathbf{A}_{IJ} = a(\Psi_I^{\varphi},\Psi_J^{\varphi}) = \int_\Omega \mathbf{B}_I^{\mathsf{T}}\,\frac{t^{3}}{12}\mathbf{D}\,\mathbf{B}_J\,\mathrm{d}\Omega
     \label{eq:mat-A}
 \end{equation}
-% TODO(公式 tag 73): B_φ 矩阵
 \begin{equation}
     (\mathbf{B}_\varphi)_{IR} = b_\varphi(\Psi_I^{\varphi},N_R^{q}) = -\int_\Omega \Psi_I^{\varphi}\cdot N_R^{q}\,\mathrm{d}\Omega
     \label{eq:mat-Bphi}
 \end{equation}
-% TODO(公式 tag 74): B_w 矩阵
 \begin{equation}
     (\mathbf{B}_w)_{JR} = b_w(\Psi_J^{w},N_R^{q})
     = \int_\Omega \nabla\Psi_J^{w}\cdot N_R^{q}\,\mathrm{d}\Omega
@@ -535,7 +502,6 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 \section{LBB稳定性的数值验证}
 
 通过广义特征值问题数值测试不同节点配比下的 $\beta_q$ 和 $\beta_\gamma$：
-% TODO(公式 tag 75-76): β_q、β_γ ≈ λ_min(K_q)、λ_min(K_γ)
 \begin{equation}
     \beta_q = \inf_{w^{h}\in W^{h}}\ \sup_{q^{h}\in Q^{h}}
     \frac{\bigl|b_w(w^{h},q^{h})\bigr|}{\lVert w^{h}\rVert_W\lVert q^{h}\rVert_Q}
@@ -560,7 +526,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 在收敛性分析中，考察中心点挠度 $w_c$、弯矩 $m_{xx}$ 与剪切力 $q_x$ 随网格加密的收敛曲线；同时比较三种方案的剪切力应力云图。可以预期，方案1（传统 $r=3:2$）的剪切力云图会出现明显振荡，方案2（仅满足剪切应变LBB）虽挠度能够收敛，但剪切力仍存在轻微振荡，而方案3（同时满足两个LBB）的挠度与剪切力均光滑收敛。
 
-% TODO(数值算例数据与图待填)：固支方板收敛图、应力云图。
+% 待补：固支方板收敛图、应力云图。
 
 \subsection{Razzaque斜板问题}
 
@@ -569,14 +535,14 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 应力云图：突出展示单LBB方案出现应力振荡、双LBB方案无振荡的对比。
 
-% TODO(数值算例数据与图待填)：Razzaque 斜板挠度/应力图。
+% 待补：Razzaque 斜板挠度/应力图。
 
 \subsection{简支圆板问题}
 
 问题描述：简支圆板，受均布荷载。
 关键指标：中心点挠度 $w_c$，径向弯矩 $m_{rr}$。
 
-% TODO(数值算例数据与图待填)：简支圆板算例。
+% 待补：简支圆板算例。
 
 \subsection{与 FEM$(w,\varphi)$+Meshfree$(q)$ 方案的对比讨论}
 
@@ -586,10 +552,9 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 本章基于两个最优约束比，设计了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法。文中给出了节点联合布置策略，可通过调整无网格节点的密度与分布精细调控 $n_w$ 与 $n_\varphi$ 的比例；并通过特征值数值测试验证了相应离散方案满足LBB稳定性。固支方板、Razzaque 斜板与简支圆板三个经典算例的结果表明，同时满足两个LBB条件的方案在位移与应力两方面均表现最优，且与 FEM$(w,\varphi)$ + Meshfree$(q)$ 的离散方式相比，两种策略在自由度配比上具有互补性。
 
-% ============================ 第5章 ============================
 \chapter{工程算例}
 
-% 本节为工程算例正文，内容待后续补充（目前仅保留章标题与占位说明）。
+% 待补：工程算例正文。
 
 \section{结论与展望}
 
