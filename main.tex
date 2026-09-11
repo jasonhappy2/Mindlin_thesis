@@ -127,8 +127,12 @@
 
 将应力沿厚度方向积分，可得弯矩合力 $\mathbf{m}$ 与剪力合力 $\mathbf{q}$：
 \begin{equation}
-    \mathbf{m} = \int_{-t/2}^{t/2} \sigma_{\alpha\beta}\,\mathrm{d}x_3\,\mathbf{e}_\alpha\otimes\mathbf{e}_\beta = \frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa,\qquad
-    \mathbf{q} = k\int_{-t/2}^{t/2}\sigma_{\alpha 3}\,\mathrm{d}x_3\,\mathbf{e}_\alpha = kGt\,\boldsymbol\gamma
+    \begin{aligned}
+        \mathbf{m} &= \int_{-t/2}^{t/2} x_3\,\sigma_{\alpha\beta}\,\mathrm{d}x_3\,\mathbf{e}_\alpha\otimes\mathbf{e}_\beta
+        = \mathbf{D}:\boldsymbol\kappa\int_{-t/2}^{t/2}x_3^2\,\mathrm{d}x_3
+        = \frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa\\
+        \mathbf{q} &= k\int_{-t/2}^{t/2}\sigma_{\alpha 3}\,\mathrm{d}x_3\,\mathbf{e}_\alpha = kGt\,\boldsymbol\gamma
+    \end{aligned}
     \label{eq:resultants}
 \end{equation}
 式中 $k$ 为剪切修正系数，本文取 $k=4/5$。值得注意的是，弯矩合力的几何系数比剪力合力高两阶厚度幂；当板厚减小而外荷载一定时，弯矩合力的量级将远小于剪力合力，从而使剪切应变趋于零，即 $t\to0$ 时 $\boldsymbol\gamma\to\mathbf{0}$。这一由厚度引起的过度约束正是剪切自锁产生的根源。
