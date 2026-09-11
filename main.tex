@@ -159,9 +159,11 @@
 \end{equation}
 式中挠度空间 $W$、转角空间 $\Phi$ 与剪力空间 $Q$ 分别定义为
 \begin{equation}
-    W := \bigl\{w\in H^1(\Omega)\mid w=\bar{w}\ \text{在}\ \Gamma_w\ \text{上}\bigr\},\quad
-    \Phi := \bigl\{\boldsymbol\varphi\in[H^1(\Omega)]^2\mid \boldsymbol\varphi=\bar{\boldsymbol\varphi}\ \text{在}\ \Gamma_\varphi\ \text{上}\bigr\},\quad
-    Q := \bigl\{\mathbf{q}\in[L^2(\Omega)]^2\bigr\}
+    \begin{aligned}
+        W &:= \bigl\{w\in H^1(\Omega)\mid w=\bar{w}\ \text{在}\ \Gamma_w\ \text{上}\bigr\}\\
+        \Phi &:= \bigl\{\boldsymbol\varphi\in[H^1(\Omega)]^2\mid \boldsymbol\varphi=\bar{\boldsymbol\varphi}\ \text{在}\ \Gamma_\varphi\ \text{上}\bigr\}\\
+        Q &:= \bigl\{\mathbf{q}\in[L^2(\Omega)]^2\bigr\}
+    \end{aligned}
     \label{eq:spaces}
 \end{equation}
 式~\eqref{eq:weak-form} 中的双线性形式与线性形式分别为
@@ -236,15 +238,17 @@
 
 \section{免自锁问题的一些常用方法}
 
-由上一节可知，剪切自锁在混合弱形式中表现为剪切应力约束与剪切应变约束两个独立约束。工程中常用的免自锁单元大多只针对剪切应变约束进行构造，其中具有代表性的有离散剪切间隙法与张量分量混合插值法，下面分别说明。
+绪论已按方法类别回顾了免自锁技术的发展脉络，本节不再重复该综述，而是以2.3节识别出的两个约束为线索，考察其中有代表性的单元究竟放松了哪一个约束。工程上应用最广的免自锁单元多按纯位移格式构造，本节以离散剪切间隙法与张量分量混合插值法为例分析其约束特性，作为本文方法的对照。
 
 \subsection{离散剪切间隙法（DSG）}
 
-Bletzinger、Bischoff与Ramm提出了离散剪切间隙法（Discrete Shear Gap, DSG）。该方法并不将剪力作为独立变量引入，而是在单元边上定义``剪切间隙''，据此重构剪切应变场，使剪切应变不再由位移梯度直接插值，从而避免薄板极限下的过度约束。DSG实现简便、易于嵌入标准位移元，但其本质上只放松了剪切应变约束（式~\eqref{eq:weak-q-h}），并未涉及剪切应力约束（式~\eqref{eq:weak-w-h}）。
+离散剪切间隙法（Discrete Shear Gap, DSG）由Bletzinger等\cite{bletzinger2000}提出。该方法不引入剪力变量，而是在单元边上定义``剪切间隙''，由间隙积分重构剪切应变场，使剪切应变不再直接取自位移梯度，从而在薄板极限下放松过度约束。从约束层面看，DSG的作用对象是剪切应变约束（式~\eqref{eq:weak-q-h}）：它降低了剪切应变场的插值阶次，使该约束得以放松；而剪切应力约束（式~\eqref{eq:weak-w-h}）所对应的力平衡条件并未被处理。因此当剪力解出现振荡时，仅靠DSG无法消除。
 
 \subsection{张量分量混合插值法（MITC）}
 
-Bathe与Dvorkin提出了张量分量混合插值法（Mixed Interpolation of Tensorial Components, MITC）。该方法对横向剪切应变采用独立的插值，并在单元内的绑定点（tying points）处与位移插值所得的剪切应变相协调，使剪切应变的分布阶次低于位移插值，从而在薄板极限下仍能通过inf-sup检验。MITC是应用最广泛的免自锁单元之一，但同样只处理了剪切应变约束，未考虑剪切应力约束。
+张量分量混合插值法（Mixed Interpolation of Tensorial Components, MITC）由Bathe与Dvorkin\cite{bathe1985}提出。该方法在单元内选取若干绑定点，对横向剪切应变采用独立插值，并要求插值结果在绑定点处与位移插值给出的剪切应变一致，同样使剪切应变的分布阶次低于位移插值。就约束而言，MITC处理的仍是剪切应变约束（式~\eqref{eq:weak-q-h}），它保证该约束在薄板极限下能够通过inf-sup检验，而剪切应力约束（式~\eqref{eq:weak-w-h}）不在其考虑范围之内。
+
+上述两类方法的稳定化构造均只对应剪切应变约束，其LBB判据也只需考察式~\eqref{eq:weak-q-h}。由2.3节可知，剪切应力约束同样需要独立的LBB条件，仅满足剪切应变约束并不能保证剪力解稳定。本文方法则在离散层面同时调节挠度、转角与剪力三场的自由度比例，使两个约束分别满足各自的LBB条件，相应的判据与最优约束比见第~\ref{ch:lbb}~章。
 
 \section{小结}
 
