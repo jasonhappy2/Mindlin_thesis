@@ -13,3 +13,5 @@
 *.log
 *.synctex.gz
 .DS_Store
+*.synctex(busy)
+*.synctex
