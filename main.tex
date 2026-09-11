@@ -127,7 +127,7 @@
 
 将应力沿厚度方向积分，可得弯矩合力 $\mathbf{m}$ 与剪力合力 $\mathbf{q}$：
 \begin{equation}
-    \mathbf{m} = \int_{-t/2}^{t/2} x_3\,\sigma_{\alpha\beta}\,\mathrm{d}x_3\,\mathbf{e}_\alpha\otimes\mathbf{e}_\beta = \frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa,\qquad
+    \mathbf{m} = \int_{-t/2}^{t/2} \sigma_{\alpha\beta}\,\mathrm{d}x_3\,\mathbf{e}_\alpha\otimes\mathbf{e}_\beta = \frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa,\qquad
     \mathbf{q} = k\int_{-t/2}^{t/2}\sigma_{\alpha 3}\,\mathrm{d}x_3\,\mathbf{e}_\alpha = kGt\,\boldsymbol\gamma
     \label{eq:resultants}
 \end{equation}
@@ -189,7 +189,7 @@
     \left\{
     \begin{aligned}
         a_\varphi(\delta\boldsymbol\varphi,\boldsymbol\varphi) &= \int_\Omega \delta\boldsymbol\kappa:\frac{t^3}{12}\mathbf{D}:\boldsymbol\kappa\,\mathrm{d}\Omega, &
-        a_q(\delta\mathbf{q},\mathbf{q}) &= -\int_\Omega \frac{1}{kGt}\delta\mathbf{q}\cdot\mathbf{q}\,\mathrm{d}\Omega\\
+        a_q(\delta\mathbf{q},\mathbf{q}) &= -\int_\Omega \frac{1}{2kGt}\delta\mathbf{q}\cdot\mathbf{q}\,\mathrm{d}\Omega\\
         b_\varphi(\boldsymbol\varphi,\mathbf{q}) &= -\int_\Omega \boldsymbol\varphi\cdot\mathbf{q}\,\mathrm{d}\Omega, &
         b_w(w,\mathbf{q}) &= \int_\Omega \nabla w\cdot\mathbf{q}\,\mathrm{d}\Omega-\int_{\Gamma_w} w\,\mathbf{q}\cdot\mathbf{n}\,\mathrm{d}\Gamma\\
         b_q(\mathbf{q},\mathbf{u}) &= b_w(w,\mathbf{q})+b_\varphi(\boldsymbol\varphi,\mathbf{q}), &
@@ -220,7 +220,7 @@
         \label{eq:weak-phi-h}\\
         b_w(\delta w_h,\mathbf{q}_h) &= f_w(\delta w_h), &&\forall\,\delta w_h\in W_h
         \label{eq:weak-w-h}\\
-        a_q(\delta\mathbf{q}_h,\mathbf{q}_h)+b_q(\delta\mathbf{q}_h,\mathbf{u}_h) &= f_q(\delta\mathbf{q}_h), &&\forall\,\delta\mathbf{q}_h\in Q_h
+        b_q(\delta\mathbf{q}_h,\mathbf{u}_h) &= f_q(\delta\mathbf{q}_h), &&\forall\,\delta\mathbf{q}_h\in Q_h
         \label{eq:weak-q-h}
     \end{align}
 \end{subequations}
