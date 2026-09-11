@@ -1,6 +1,9 @@
 %! TEX program = xelatex
 %! TEX encoding = UTF-8 Unicode
 
+% 参考文献格式对齐课题组（师兄师姐两篇）：关闭 DOI/URL，条目用半角标点
+\PassOptionsToPackage{doi=false,url=false,bibpunct=half}{gbt7714}
+
 \documentclass[internationalmaster]{hquThesis}
 \usepackage{lineno}
 \usepackage{amsmath,amsfonts,amssymb,textcomp,ulem}
@@ -10,7 +13,7 @@
 
 
 
-\hypersetup{colorlinks=true,linkcolor=black,citecolor=black}
+\hypersetup{hidelinks}
 \begin{document}
 \makecover
 % NOTE: 正式文档请取消下面两行注释
