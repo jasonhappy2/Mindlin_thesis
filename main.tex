@@ -522,11 +522,34 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \subsection{固支方板问题}
 
-问题描述：四边固支方板，边长 $L$，厚度 $t$，受均布荷载 $\bar{p}$。其精确解取 Timoshenko 厚板解。
+四边固支方板取边长 $L=1$、厚度 $t=10^{-3}$，受均布荷载作用，四边挠度与转角的本质边界条件按一致项施加，精确解采用Timoshenko厚板解。计算采用均匀网格，支撑尺寸取 $s=1.5$，数值积分阶次取4。
 
-在收敛性分析中，考察中心点挠度 $w_c$、弯矩 $m_{xx}$ 与剪切力 $q_x$ 随网格加密的收敛曲线；同时比较三种方案的剪切力应力云图。可以预期，方案1（传统 $r=3:2$）的剪切力云图会出现明显振荡，方案2（仅满足剪切应变LBB）虽挠度能够收敛，但剪切力仍存在轻微振荡，而方案3（同时满足两个LBB）的挠度与剪切力均光滑收敛。
+图\ref{fig:clamped-ratio}给出 $n^\varphi=81$ 与 $n^\varphi=289$ 两组节点配置下位移与剪力误差随剪力节点数的变化，图中虚线为理论最优约束比 $r^*=n^q/n^\varphi=1$ 的位置。两种单元的误差均在 $n^q$ 接近 $n^\varphi$ 时降至最低；$n^q$ 继续增大后误差不再改善，与第~\ref{ch:lbb}~章给出的 $n_q\le n_\varphi$ 一致。
 
-% 待补：固支方板收敛图、应力云图。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/ratio_ns.png}
+    \caption{\centering{固支方板误差随剪力节点数的变化（虚线为最优约束比 $r^*=1$）}}
+    \label{fig:clamped-ratio}
+\end{figure}
+
+图\ref{fig:clamped-conv}为最优约束比（$r=r^*$）与传统约束比（$r=3:2$）下挠度、转角与剪力误差随网格尺寸 $h$ 的收敛曲线。取 $r=r^*$ 时三者均以约2阶收敛；取 $r=3:2$ 时挠度与转角的误差整体偏高，剪力误差则不随网格加密而下降。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/convergence.png}
+    \caption{\centering{固支方板挠度、转角与剪力误差的收敛曲线（实线为 $r=r^*$，虚线为 $r=3:2$）}}
+    \label{fig:clamped-conv}
+\end{figure}
+
+图\ref{fig:clamped-shear}为 $16\times16$ 网格下剪力 $Q_1$ 的等值线云图，四幅子图采用统一色标。$r=3:2$ 时tri3与tri6的剪力场均出现明显的棋盘状振荡；取 $r=r^*$ 后剪力场光滑，等值线分布与理论趋势相符。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{figures/shear_contour.png}
+    \caption{\centering{固支方板剪力 $Q_1$ 等值线云图（$16\times16$ 网格，统一色标）}}
+    \label{fig:clamped-shear}
+\end{figure}
 
 \subsection{Razzaque斜板问题}
 
