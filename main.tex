@@ -524,12 +524,12 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 四边固支方板取边长 $L=1$、厚度 $t=10^{-3}$，受均布荷载作用，四边挠度与转角的本质边界条件按一致项施加，精确解采用Timoshenko厚板解。计算采用均匀网格，支撑尺寸取 $s=1.5$，数值积分阶次取4。
 
-图\ref{fig:clamped-ratio}给出 $n^\varphi=81$ 与 $n^\varphi=289$ 两组节点配置下位移与剪力误差随剪力节点数的变化，图中虚线为理论最优约束比 $r^*=n^q/n^\varphi=1$ 的位置。两种单元的误差均在 $n^q$ 接近 $n^\varphi$ 时降至最低；$n^q$ 继续增大后误差不再改善，与第~\ref{ch:lbb}~章给出的 $n_q\le n_\varphi$ 一致。
+图\ref{fig:clamped-ratio}给出 $n^\varphi=81$ 与 $n^\varphi=289$ 两组节点配置下挠度、转角与剪力误差随剪力节点数的变化，图中三列依次为挠度、转角与剪力的误差，虚线为理论最优约束比 $r^*=n^q/n^\varphi=1$ 的位置。两种单元的误差均在 $n^q$ 接近 $n^\varphi$ 时降至最低；$n^q$ 继续增大后误差不再改善，与第~\ref{ch:lbb}~章给出的 $n_q\le n_\varphi$ 一致。
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/ratio_ns.png}
-    \caption{\centering{固支方板误差随剪力节点数的变化（虚线为最优约束比 $r^*=1$）}}
+    \caption{\centering{固支方板挠度、转角与剪力误差随剪力节点数的变化（虚线为最优约束比 $r^*=1$）}}
     \label{fig:clamped-ratio}
 \end{figure}
 
