@@ -526,27 +526,27 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 图\ref{fig:clamped-ratio}给出 $n^\varphi=81$ 与 $n^\varphi=289$ 两组节点配置下挠度、转角与剪力误差随剪力节点数的变化，图中三列依次为挠度、转角与剪力的误差，虚线为理论最优约束比 $r^*=n^q/n^\varphi=1$ 的位置。两种单元的误差均在 $n^q$ 接近 $n^\varphi$ 时降至最低；$n^q$ 继续增大后误差不再改善，与第~\ref{ch:lbb}~章给出的 $n_q\le n_\varphi$ 一致。
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/ratio_ns.png}
+    \includegraphics[width=0.95\textwidth]{figures/ratio_ns.png}
     \caption{\centering{固支方板挠度、转角与剪力误差随剪力节点数的变化（虚线为最优约束比 $r^*=1$）}}
     \label{fig:clamped-ratio}
 \end{figure}
 
 图\ref{fig:clamped-conv}给出三角单元族与四边形单元族的误差收敛对比，对照方法为2.4节所述的离散剪切间隙法（DSG3）与张量分量混合插值法（MITC4）。上排为三角单元：本文方案取 $r=r^*$ 时挠度、转角与剪力均以约2阶收敛；同一方案取 $r=3:2$ 时三类误差整体偏高，剪力误差不随网格加密而下降；DSG3的挠度与转角误差比本文方案高一个量级以上，剪力误差始终维持在较高水平。下排为四边形单元：本文方案与MITC4的挠度、转角均以约2阶收敛，本文方案的误差略小，而MITC4的剪力误差不随网格加密而下降。
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/conv_methods.png}
+    \includegraphics[width=0.95\textwidth]{figures/conv_methods.png}
     \caption{\centering{固支方板挠度、转角与剪力的误差收敛对比（上排为三角单元族，下排为四边形单元族）}}
     \label{fig:clamped-conv}
 \end{figure}
 
 图\ref{fig:clamped-shear}为 $16\times16$ 网格下剪切应变 $\gamma_1$ 的等值线云图，四幅子图采用统一色标。本文方案取 $r=3:2$ 时应变场呈条带状振荡；取 $r=r^*$ 后应变场光滑；DSG3与MITC4的应变场均出现明显振荡，其幅度远大于本文方案。
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.72\textwidth]{figures/shear_strain.png}
+    \includegraphics[width=0.65\textwidth]{figures/shear_strain.png}
     \caption{\centering{固支方板剪切应变 $\gamma_1$ 的等值线云图（$16\times16$ 网格，统一色标）}}
     \label{fig:clamped-shear}
 \end{figure}
