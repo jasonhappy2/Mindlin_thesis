@@ -6,7 +6,7 @@
 
 \documentclass[internationalmaster]{hquThesis}
 \usepackage{lineno}
-\usepackage{amsmath,amsfonts,amssymb,textcomp,ulem}
+\usepackage{amsmath,amsfonts,amssymb,textcomp,ulem,bm}
 \usepackage{booktabs,tabularray,float}
 \usepackage{listings}
 \graphicspath{{figures/}}
@@ -527,7 +527,24 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \subsection{固支方板问题}
 
-四边固支方板取边长 $L=1$、厚度 $t=10^{-3}$，受均布荷载作用，四边挠度与转角的本质边界条件按一致项施加，精确解采用Timoshenko厚板解。计算采用均匀网格，支撑尺寸取 $s=1.5$，数值积分阶次取4。
+四边固支方板如图\ref{fig:clamped-model}所示，取边长 $L=1$、厚度 $t=10^{-3}$，承受横向均布荷载，四边挠度与转角的本质边界条件按一致项施加，精确解采用Timoshenko厚板解。计算中支撑尺寸取 $s=1.5$，数值积分阶次取4。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/clamped_model.png}
+    \caption{\centering{四边固支方板示意图}}
+    \label{fig:clamped-model}
+\end{figure}
+
+图\ref{fig:clamped-mesh}给出挠度场的四组节点布置，节点数依次为61、256、1050与4078：域内节点非均匀分布，边界节点沿边均匀排列；转角场与剪力场的节点数按4.6节给出的约束比确定。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.62\textwidth]{figures/clamped_mesh.png}
+    \caption{\centering{固支方板挠度场的节点布置（图中数字为节点数）}}
+    \label{fig:clamped-mesh}
+\end{figure}
+
 
 图\ref{fig:clamped-ratio}给出 $n^\varphi=81$ 与 $n^\varphi=289$ 两组节点配置下挠度、转角与剪力误差随剪力节点数的变化，图中三列依次为挠度、转角与剪力的误差，虚线为理论最优约束比 $r^*=n^q/n^\varphi=1$ 的位置。两种单元的误差均在 $n^q$ 接近 $n^\varphi$ 时降至最低；$n^q$ 继续增大后误差不再改善，与第~\ref{ch:lbb}~章给出的 $n_q\leq n_\varphi$ 一致。
 
