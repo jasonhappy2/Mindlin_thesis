@@ -527,7 +527,25 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \subsection{固支方板问题}
 
-四边固支方板如图\ref{fig:clamped-model}所示，取边长 $L=1$、厚度 $t=10^{-3}$，承受横向均布荷载，四边挠度与转角的本质边界条件按一致项施加，精确解采用Timoshenko厚板解。计算中支撑尺寸取 $s=1.5$，数值积分阶次取4。
+四边固支方板如图\ref{fig:clamped-model}所示，其求解域为 $\Omega=(0,1)\otimes(0,1)$，边长 $L=1$，厚度 $t=10^{-3}$，材料系数分别取杨氏模量 $E=10.92\times10^{6}$、泊松比 $\nu=0.3$，板上作用如图所示的横向非均布荷载：
+\begin{equation}
+    \begin{aligned}
+        \bar p(x,y) = &\frac{Et^3}{12(1-\nu^2)}\Bigl(12y(y-1)(5x^2-5x+1)\bigl(2y^2(y-1)^2+x(x-1)(5y^2-5y+1)\bigr)\\
+        &+12x(x-1)(5y^2-5y+1)\bigl(2x^2(x-1)^2+y(y-1)(5x^2-5x+1)\bigr)\Bigr)
+    \end{aligned}
+    \label{eq:clamped-load}
+\end{equation}
+该问题的精确解\cite{chinosi1995}为
+\begin{equation}
+    \begin{aligned}
+        w(x,y) &= \frac{1}{3}x^3(x-1)^3y^3(y-1)^3 - \frac{2t^2}{5(1-\nu)}\Bigl(y^3(y-1)^3x(x-1)(5x^2-5x+1)\\
+        &\quad + x^3(x-1)^3y(y-1)(5y^2-5y+1)\Bigr)\\
+        \varphi_1(x,y) &= y^3(y-1)^3x^2(x-1)^2(2x-1)\\
+        \varphi_2(x,y) &= x^3(x-1)^3y^2(y-1)^2(2y-1)
+    \end{aligned}
+    \label{eq:clamped-exact}
+\end{equation}
+式中 $\bar p$ 为横向荷载，$w$ 为挠度，$\varphi_1$ 与 $\varphi_2$ 为转角 $\boldsymbol\varphi$ 的两个分量。
 
 \begin{figure}[htbp]
     \centering
@@ -536,11 +554,11 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:clamped-model}
 \end{figure}
 
-图\ref{fig:clamped-mesh}给出挠度场的四组节点布置，节点数依次为61、256、1050与4078：域内节点非均匀分布，边界节点沿边均匀排列；转角场与剪力场的节点数按4.6节给出的约束比确定。
+如图\ref{fig:clamped-mesh}所示，挠度场采用四组不同密度的节点布置，节点数依次为61、256、1050与4078：域内节点非均匀分布，边界节点沿边均匀排列。计算中支撑尺寸取 $s=1.5$，数值积分阶次取4；转角场与剪力场的节点数按4.6节给出的约束比确定。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.62\textwidth]{figures/clamped_mesh.png}
+    \includegraphics[width=\textwidth]{figures/clamped_mesh.png}
     \caption{\centering{固支方板挠度场的节点布置（图中数字为节点数）}}
     \label{fig:clamped-mesh}
 \end{figure}
