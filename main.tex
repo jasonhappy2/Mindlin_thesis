@@ -596,12 +596,27 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 % 待补：Razzaque 斜板挠度/应力图。
 
-\subsection{简支圆板问题}
+\subsection{固支圆板问题}
 
-问题描述：简支圆板，受均布荷载。
-关键指标：中心点挠度 $w_c$，径向弯矩 $m_{rr}$。
+本算例取周边固支圆板，半径 $R=5$，厚度 $t=0.1$，厚径比 $R/t=50$，材料为各向同性线弹性，杨氏模量 $E=10.92$、泊松比 $\nu=0.3$，板上作用横向均布荷载 $\bar p=1$。为减小计算规模，按对称性取四分之一圆域计算，圆弧边界取固支条件、两条直边取对称条件，如图\ref{fig:circ-model}所示；该问题中心点挠度的精确解为 $9783.51$\cite{katili1993}，可作为位移精度的考核标准。
 
-% 待补：简支圆板算例。
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/circ_model.png}
+    \caption{\centering{周边固支圆板示意图}}
+    \label{fig:circ-model}
+\end{figure}
+
+如图\ref{fig:circ-mesh}所示，挠度场仍采用四组不同密度的节点布置，节点数依次为47、239、1065与4516，域内节点非均匀分布、圆弧边界上的节点沿弧均匀排列；转角场与剪力场的节点数按4.6节给出的约束比确定。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/circ_mesh.png}
+    \caption{\centering{固支圆板挠度场的节点布置（图中数字为节点数）}}
+    \label{fig:circ-mesh}
+\end{figure}
+
+\clearpage
 
 \subsection{与 FEM$(w,\varphi)$+Meshfree$(q)$ 方案的对比讨论}
 
@@ -609,7 +624,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \section{小结}
 
-本章基于两个最优约束比，设计了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法。文中给出了节点联合布置策略，可通过调整无网格节点的密度与分布精细调控 $n_w$ 与 $n_\varphi$ 的比例；并通过特征值数值测试验证了相应离散方案满足LBB稳定性。固支方板、Razzaque 斜板与简支圆板三个经典算例的结果表明，同时满足两个LBB条件的方案在位移与应力两方面均表现最优，且与 FEM$(w,\varphi)$ + Meshfree$(q)$ 的离散方式相比，两种策略在自由度配比上具有互补性。
+本章基于两个最优约束比，设计了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法。文中给出了节点联合布置策略，可通过调整无网格节点的密度与分布精细调控 $n_w$ 与 $n_\varphi$ 的比例；并通过特征值数值测试验证了相应离散方案满足LBB稳定性。固支方板、Razzaque 斜板与固支圆板三个经典算例的结果表明，同时满足两个LBB条件的方案在位移与应力两方面均表现最优，且与 FEM$(w,\varphi)$ + Meshfree$(q)$ 的离散方式相比，两种策略在自由度配比上具有互补性。
 
 \chapter{工程算例}
 
@@ -627,7 +642,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 (3) 依据上述两个最优约束比，建立了 Meshfree$(w,\varphi)$ + FEM$(q)$ 的免剪切自锁混合离散方法，并给出了相应的节点布置策略。
 
-(4) 固支方板、Razzaque 斜板与简支圆板三个经典算例的数值结果表明，同时满足两个LBB条件的离散方案在挠度解与剪切力解的收敛性和稳定性上均表现良好，验证了本文理论结果与数值格式的有效性。
+(4) 固支方板、Razzaque 斜板与固支圆板三个经典算例的数值结果表明，同时满足两个LBB条件的离散方案在挠度解与剪切力解的收敛性和稳定性上均表现良好，验证了本文理论结果与数值格式的有效性。
 
 \subsection{展望}
 
