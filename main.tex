@@ -11,6 +11,15 @@
 \usepackage{listings}
 \graphicspath{{figures/}}
 
+% 浮动体排版：允许每页多放浮动体、减少图与文字之间的空白
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+
 
 
 \hypersetup{hidelinks}
@@ -549,7 +558,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/clamped_model.png}
+    \includegraphics[width=0.72\textwidth]{figures/clamped_model.png}
     \caption{\centering{四边固支方板示意图}}
     \label{fig:clamped-model}
 \end{figure}
@@ -558,7 +567,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/clamped_mesh.png}
+    \includegraphics[width=0.80\textwidth]{figures/clamped_mesh.png}
     \caption{\centering{固支方板挠度场的节点布置（图中数字为节点数）}}
     \label{fig:clamped-mesh}
 \end{figure}
@@ -566,35 +575,24 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/ratio_ns.png}
+    \includegraphics[width=0.88\textwidth]{figures/ratio_ns.png}
     \caption{\centering{固支方板挠度、转角与剪力误差随剪力节点数的变化（虚线为最优约束比 $r^*=1$）}}
     \label{fig:clamped-ratio}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/conv_methods.png}
+    \includegraphics[width=0.88\textwidth]{figures/conv_methods.png}
     \caption{\centering{固支方板挠度、转角与剪力的误差收敛对比（上排为三角单元族，下排为四边形单元族）}}
     \label{fig:clamped-conv}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.65\textwidth]{figures/shear_strain.png}
+    \includegraphics[width=0.52\textwidth]{figures/shear_strain.png}
     \caption{\centering{固支方板剪切应变 $\gamma_1$ 的等值线云图（$16\times16$ 网格，统一色标）}}
     \label{fig:clamped-shear}
 \end{figure}
-
-\clearpage
-
-\subsection{Razzaque斜板问题}
-
-问题描述：平行四边形斜板，一边固支、对边简支，受均布荷载。
-关键指标：中心点挠度 $w_c$，与精确解/参考解对比。
-
-应力云图：突出展示单LBB方案出现应力振荡、双LBB方案无振荡的对比。
-
-% 待补：Razzaque 斜板挠度/应力图。
 
 \subsection{固支圆板问题}
 
@@ -610,7 +608,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{figures/circ_model.png}
+    \includegraphics[width=0.70\textwidth]{figures/circ_model.png}
     \caption{\centering{周边固支圆板示意图}}
     \label{fig:circ-model}
 \end{figure}
@@ -619,12 +617,19 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/circ_mesh.png}
+    \includegraphics[width=0.80\textwidth]{figures/circ_mesh.png}
     \caption{\centering{固支圆板挠度场的节点布置（图中数字为节点数）}}
     \label{fig:circ-mesh}
 \end{figure}
 
-\clearpage
+\subsection{Razzaque斜板问题}
+
+问题描述：平行四边形斜板，一边固支、对边简支，受均布荷载。
+关键指标：中心点挠度 $w_c$，与精确解/参考解对比。
+
+应力云图：突出展示单LBB方案出现应力振荡、双LBB方案无振荡的对比。
+
+% 待补：Razzaque 斜板挠度/应力图。
 
 \subsection{与 FEM$(w,\varphi)$+Meshfree$(q)$ 方案的对比讨论}
 
