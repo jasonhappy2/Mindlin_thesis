@@ -598,7 +598,15 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 
 \subsection{固支圆板问题}
 
-本算例取周边固支圆板，半径 $R=5$，厚度 $t=0.1$，厚径比 $R/t=50$，材料为各向同性线弹性，杨氏模量 $E=10.92$、泊松比 $\nu=0.3$，板上作用横向均布荷载 $\bar p=1$。为减小计算规模，按对称性取四分之一圆域计算，圆弧边界取固支条件、两条直边取对称条件，如图\ref{fig:circ-model}所示；该问题中心点挠度的精确解为 $9783.51$\cite{katili1993}，可作为位移精度的考核标准。
+本算例取周边固支圆板，半径 $R=5$，厚度 $t=0.1$，厚径比 $R/t=50$，材料为各向同性线弹性，杨氏模量 $E=10.92$、泊松比 $\nu=0.3$，板上作用横向均布荷载 $\bar p=1$；按对称性取四分之一圆域计算，圆弧边界取固支条件，两条直边取对称条件。该问题的精确解\cite{katili1993}为
+\begin{equation}
+    \begin{aligned}
+        w(r) &= \frac{\bar pR^4}{64D^b}(1-\xi^2)\Bigl[(1-\xi^2)+\frac{8t^2}{3k(1-\nu)R^2}\Bigr],\qquad \xi=\frac{r}{R}\\
+        \varphi_r(r) &= \frac{\bar p\,r\,(r^2-R^2)}{16D^b}
+    \end{aligned}
+    \label{eq:circ-exact}
+\end{equation}
+式中 $\bar p$ 为横向荷载，$w$ 为挠度，$\varphi_r$ 为径向转角，$r$ 为径向坐标，$\xi$ 为归一化径向坐标；$D^b=Et^3/[12(1-\nu^2)]$ 为弯曲刚度，$k$ 为剪切修正系数。中心点挠度的精确解为 $w(0)=9783.51$\cite{katili1993}，本文以该值作为位移精度的考核标准。
 
 \begin{figure}[htbp]
     \centering
