@@ -613,11 +613,11 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:circ-model}
 \end{figure}
 
-如图\ref{fig:circ-mesh}所示，挠度场仍采用四组不同密度的节点布置，节点数依次为47、239、1065与4516，域内节点非均匀分布、圆弧边界上的节点沿弧均匀排列；转角场与剪力场的节点数按4.6节给出的约束比确定。
+如图\ref{fig:circ-mesh}所示，挠度场采用非均匀的节点布置，域内节点非均匀分布，圆弧边界上的节点沿弧均匀排列；计算共取四组网格，其节点数依次为47、239、1065与4516，转角场与剪力场的节点数按4.6节给出的约束比确定。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.82\textwidth]{figures/circ_mesh.png}
+    \includegraphics[width=0.58\textwidth]{figures/circ_mesh.png}
     \caption{\centering{固支圆板问题节点离散}}
     \label{fig:circ-mesh}
 \end{figure}
@@ -633,11 +633,11 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:skew-model}
 \end{figure}
 
-如图\ref{fig:skew-mesh}所示，三个场均采用均匀网格离散，四组网格的挠度场节点数依次为81、289、1089与4225；转角场与剪力场的节点数按4.6节给出的约束比确定。
+如图\ref{fig:skew-mesh}所示，三个场均采用均匀网格离散；计算共取四组网格，其挠度场节点数依次为81、289、1089与4225，转角场与剪力场的节点数按4.6节给出的约束比确定。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.81\textwidth]{figures/skew_mesh.png}
+    \includegraphics[width=0.80\textwidth]{figures/skew_mesh.png}
     \caption{\centering{斜板问题节点离散}}
     \label{fig:skew-mesh}
 \end{figure}
