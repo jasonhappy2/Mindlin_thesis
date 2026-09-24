@@ -570,11 +570,13 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:clamped-mesh}
 \end{figure}
 
-\clearpage
+为考察网格加密对计算结果的影响，表~\ref{tab:conv4} 与图~\ref{fig:sq-conv4} 给出四组网格配置在四档网格下的误差。
+
+表~\ref{tab:conv4} 中数值为 $w$、$\varphi$ 与 $Q$ 的相对 $L_2$ 误差的对数值，四档网格的剪切节点数 $n_q$ 依次为81、289、1089与4225。两组均匀网格配置下，三个场的误差均随加密单调下降，每加密一档约降低0.6个数量级，与二阶收敛一致；$W$ 网格非均匀时，三个场的改善均明显放缓，其中 $Q$ 的误差不再减小，末档反而回升。
 
 \input{tables/conv4}
 
-\clearpage
+图~\ref{fig:sq-conv4} 为相应误差随网格尺寸 $h$ 的收敛曲线，四行依次为 tri3 均匀、tri3 非均匀、quad4 均匀与 quad4 非均匀 $W$ 网格，每行三列依次为挠度、转角与剪力的误差，图中符号三角形为二阶收敛的参考斜率。两组均匀网格配置中，三条曲线均与参考斜率平行，说明三个场同为二阶收敛；非均匀配置中挠度与转角的曲线略缓，剪力的曲线则趋于水平，即剪力误差不随网格加密改善。
 
 \begin{figure}[htbp]
     \centering
@@ -583,6 +585,8 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:sq-conv4}
 \end{figure}
 
+图~\ref{fig:sq-cloud-u} 与图~\ref{fig:sq-cloud-nu} 分别为均匀与非均匀 $W$ 网格下数值解与精确解的云图对比，每行依次为 $|Q|$、$|\boldsymbol\varphi|$ 与 $w$，每两列为一种单元（左为数值解，右为精确解），同一行共用色标。均匀 $W$ 网格下，两种单元的数值解与精确解在分布与幅值上均无明显差别；非均匀 $W$ 网格下，$w$ 与 $|\boldsymbol\varphi|$ 仍与精确解吻合，$|Q|$ 则出现明显的高频起伏，幅值远大于精确解。
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/cloud_uniform.png}
@@ -590,12 +594,18 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:sq-cloud-u}
 \end{figure}
 
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/cloud_nonuniform.png}
     \caption{\centering{非均匀 $W$ 网格下数值解与精确解的云图对比}}
     \label{fig:sq-cloud-nu}
 \end{figure}
+
+
+可见剪力的精度对 $W$ 网格的节点分布最为敏感，节点分布无规时其梯度逼近变差，而剪切应变由挠度梯度与转角相减得到，误差会被进一步放大；因此非均匀 $W$ 网格应采用平滑渐变的形式，这一点在后续算例中据此处理。
+
+\clearpage
 
 \subsection{固支圆板问题}
 
