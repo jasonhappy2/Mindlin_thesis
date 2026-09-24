@@ -563,12 +563,12 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:clamped-model}
 \end{figure}
 
-如图\ref{fig:clamped-mesh}所示，挠度场采用四组不同密度的节点布置，节点数依次为64、256、1024与4096：域内节点非均匀分布，边界节点沿边均匀排列。计算中支撑尺寸取 $s=1.5$，数值积分阶次取4；转角场与剪力场的节点数按4.6节给出的约束比确定。
+如图\ref{fig:clamped-mesh}所示，挠度场采用四组不同密度的节点布置，网格依次为8$\times$8、16$\times$16、32$\times$32与64$\times$64，对应节点数64、256、1024与4096：域内节点非均匀分布，边界节点沿边均匀排列。计算中支撑尺寸取 $s=1.5$，数值积分阶次取4；转角场与剪力场的节点数按4.6节给出的约束比确定。
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.81\textwidth]{figures/clamped_mesh.png}
-    \caption{\centering{固支方板挠度场的节点布置（图中数字为节点数）}}
+    \caption{\centering{固支方板问题节点离散}}
     \label{fig:clamped-mesh}
 \end{figure}
 
@@ -618,7 +618,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.82\textwidth]{figures/circ_mesh.png}
-    \caption{\centering{固支圆板挠度场的节点布置（图中数字为节点数）}}
+    \caption{\centering{固支圆板问题节点离散}}
     \label{fig:circ-mesh}
 \end{figure}
 
@@ -638,7 +638,7 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.81\textwidth]{figures/skew_mesh.png}
-    \caption{\centering{锐角斜板挠度场的节点布置（图中数字为节点数）}}
+    \caption{\centering{斜板问题节点离散}}
     \label{fig:skew-mesh}
 \end{figure}
 
