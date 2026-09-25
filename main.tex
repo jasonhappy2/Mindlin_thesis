@@ -570,38 +570,29 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:clamped-mesh}
 \end{figure}
 
-为考察网格加密对计算结果的影响，表~\ref{tab:conv4} 与图~\ref{fig:sq-conv4} 给出四组网格配置在四档网格下的误差。
+为考察约束比取值与网格加密的影响，表~\ref{tab:tri3-5cases} 与图~\ref{fig:sq-conv5} 给出五组 tri3 算例在四档网格下的误差。
 
-表~\ref{tab:conv4} 中数值为 $w$、$\varphi$ 与 $Q$ 的相对 $L_2$ 误差的对数值，四档网格的剪切节点数 $n_q$ 依次为81、289、1089与4225。两组均匀网格配置下，三个场的误差均随加密单调下降，每加密一档约降低0.6个数量级，与二阶收敛一致；$W$ 网格非均匀时，三个场的改善均明显放缓，其中 $Q$ 的误差不再减小，末档反而回升。
+表~\ref{tab:tri3-5cases} 中数值为各量相对 $L_2$ 误差的对数值，五组算例依次为 $W$ 均布下的最优比与 $1:1:1$ 两种节点配置、$W$ 非均布下的两种配置，以及位移型单元 DSG3。$W$ 均布取最优比（$r=1.19\sim1.45$）时，挠度、转角与剪力误差均随加密单调下降，每加密一档约降低0.6个数量级，与二阶收敛一致；同一网格改取 $1:1:1$（$r=1.5$）后，最粗一档的挠度误差升至 $10^{0.60}$，剪力误差在各档均偏大0.2$\sim$0.6个数量级。$W$ 非均布时，两种配置的挠度与转角仍随加密下降，但剪力误差不再减小并逐档回升，最优比配置的末档已升至 $10^{0.26}$。DSG3 为位移型离散、不含独立剪力场，其挠度与转角误差比混合场高约一个数量级，末列给出的是原始剪切应变 $\lVert\gamma_h\rVert$：量级 $10^3\sim10^4$、仅一阶收敛，与混合场的 $q$ 不可直接比较。
 
-\input{tables/conv4}
+\input{tables/tri3_5cases}
 
-图~\ref{fig:sq-conv4} 为相应误差随网格尺寸 $h$ 的收敛曲线，四行依次为 tri3 均匀、tri3 非均匀、quad4 均匀与 quad4 非均匀 $W$ 网格，每行三列依次为挠度、转角与剪力的误差，图中符号三角形为二阶收敛的参考斜率。两组均匀网格配置中，三条曲线均与参考斜率平行，说明三个场同为二阶收敛；非均匀配置中挠度与转角的曲线略缓，剪力的曲线则趋于水平，即剪力误差不随网格加密改善。
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.85\textwidth]{figures/conv_overview.png}
-    \caption{\centering{四组网格配置下 $w$、$\varphi$ 与 $Q$ 的误差收敛}}
-    \label{fig:sq-conv4}
-\end{figure}
-
-图~\ref{fig:sq-cloud-u} 与图~\ref{fig:sq-cloud-nu} 分别为均匀与非均匀 $W$ 网格下数值解与精确解的云图对比，每行依次为 $|Q|$、$|\boldsymbol\varphi|$ 与 $w$，每两列为一种单元（左为数值解，右为精确解），同一行共用色标。均匀 $W$ 网格下，两种单元的数值解与精确解在分布与幅值上均无明显差别；非均匀 $W$ 网格下，$w$ 与 $|\boldsymbol\varphi|$ 仍与精确解吻合，$|Q|$ 则出现明显的高频起伏，幅值远大于精确解。
+图~\ref{fig:sq-conv5} 为相应误差随网格尺寸 $h$ 的收敛曲线，三个子图依次为挠度、转角与剪力，五条曲线与上表五组算例一一对应，图中符号三角形为二阶收敛的参考斜率。均匀 $W$ 网格下，最优比的两条实线始终与参考斜率平行，$1:1:1$ 的曲线在粗网格处明显上翘；非均匀 $W$ 网格的两条曲线整体低于均匀配置，其中剪力的两条曲线趋于水平。DSG3 的挠度与转角曲线始终位于其余曲线之上，其剪力曲线不在同一量级。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/cloud_uniform.png}
-    \caption{\centering{均匀 $W$ 网格下数值解与精确解的云图对比}}
-    \label{fig:sq-cloud-u}
+    \includegraphics[width=\textwidth]{figures/conv_5cases.pdf}
+    \caption{\centering{五组 tri3 算例的误差收敛}}
+    \label{fig:sq-conv5}
 \end{figure}
 
+图~\ref{fig:sq-cloud3} 为上述算例数值解与精确解的云图，三行依次为挠度、转角与剪力，六列依次为 $W$ 均布最优比、$W$ 非均布最优比、$W$ 均布 $1:1:1$、$W$ 非均布 $1:1:1$、DSG3 与精确解，同一行共用色标。均匀 $W$ 网格下，两种节点配置的三个场均与精确解一致；非均匀 $W$ 网格下，挠度与转角仍与精确解吻合，剪力则出现明显的高频起伏，幅值远大于精确解。DSG3 无独立剪力场，剪力一行留空。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/cloud_nonuniform.png}
-    \caption{\centering{非均匀 $W$ 网格下数值解与精确解的云图对比}}
-    \label{fig:sq-cloud-nu}
+    \includegraphics[width=\textwidth]{figures/cloud_3fields.pdf}
+    \caption{\centering{五组 tri3 算例数值解与精确解的云图}}
+    \label{fig:sq-cloud3}
 \end{figure}
-
 
 可见剪力的精度对 $W$ 网格的节点分布最为敏感，节点分布无规时其梯度逼近变差，而剪切应变由挠度梯度与转角相减得到，误差会被进一步放大；因此非均匀 $W$ 网格应采用平滑渐变的形式，这一点在后续算例中据此处理。
 
