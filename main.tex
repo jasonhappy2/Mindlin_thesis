@@ -570,13 +570,45 @@ $w^{h}$ 和 $\varphi^{h}$ 分别用RK形函数离散：
     \label{fig:clamped-mesh}
 \end{figure}
 
-为考察约束比取值与网格加密的影响，表~\ref{tab:tri3-5cases} 给出五组 tri3 算例在四档网格下的误差。
+为考察节点布置与约束比取值的影响，表~\ref{tab:sq-uniform}、表~\ref{tab:sq-nonuniform} 与图~\ref{fig:sq-conv-u}、图~\ref{fig:sq-conv-nu} 分别给出 $W$ 节点均布与非均布两种布置下四组算例的误差。
 
-表~\ref{tab:tri3-5cases} 中数值为各量相对 $L_2$ 误差的对数值，五组算例依次为 $W$ 均布下的最优比与 $1:1:1$ 两种节点配置、$W$ 非均布下的两种配置，以及位移型单元 DSG3。$W$ 均布取最优比（$r=1.19\sim1.45$）时，挠度、转角与剪力误差均随加密单调下降，每加密一档约降低0.6个数量级，与二阶收敛一致；同一网格改取 $1:1:1$（$r=1.5$）后，最粗一档的挠度误差升至 $10^{0.60}$，剪力误差在各档均偏大0.2$\sim$0.6个数量级。$W$ 非均布时，两种配置的挠度与转角仍随加密下降，但剪力误差不再减小并逐档回升，最优比配置的末档已升至 $10^{0.26}$。DSG3 为位移型离散、不含独立剪力场，其挠度与转角误差比混合场高约一个数量级，末列给出的是原始剪切应变 $\lVert\gamma_h\rVert$：量级 $10^3\sim10^4$、仅一阶收敛，与混合场的 $q$ 不可直接比较。
+表~\ref{tab:sq-uniform} 为均布布置的结果，四组算例依次为 RK3 取最优约束比、RK3 取 $1:1:1$、位移型有限元 FEM 与 DSG3。RK3 取最优比（$r=1.06\sim1.41$）时挠度与转角的误差为四组中最小，末档分别为 $10^{-3.95}$ 与 $10^{-3.54}$；取 $1:1:1$（$r=1.5$）后两者只差0.1$\sim$0.3个数量级，FEM 大0.8$\sim$1.0个数量级，DSG3 大2.2$\sim$2.6个数量级且粗网格处几乎不下降。剪力的次序则相反：末档以 FEM 与 $1:1:1$ 较小（$10^{-2.52}$ 与 $10^{-2.42}$），最优比配置只到 $10^{-1.53}$，其段阶为1.2$\sim$1.6；DSG3 的剪力误差全程为正，即已大于精确解本身。
 
-\input{tables/tri3_5cases}
+\begin{table}[htbp]
+    \centering
+    \caption{$W$ 节点均布布置时四组算例的相对 $L_2$ 误差（$\log_{10}$）}
+    \label{tab:sq-uniform}
+    \includegraphics[width=\textwidth]{figures/tab_uniform.png}
+\end{table}
 
-可见剪力的精度对 $W$ 网格的节点分布最为敏感，节点分布无规时其梯度逼近变差，而剪切应变由挠度梯度与转角相减得到，误差会被进一步放大。
+图~\ref{fig:sq-conv-u} 为相应的收敛曲线，三个子图依次为挠度、转角与剪力，图中符号三角形为二阶收敛的参考斜率。挠度与转角的子图中最优比与 $1:1:1$ 的曲线贴近且陡于参考斜率，FEM 与 DSG3 依次在其上方；剪力的子图中 DSG3 明显偏离，其余三条斜率相近而最优比最低。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/conv_uniform.pdf}
+    \caption{\centering{$W$ 节点均布布置时四组算例的误差收敛}}
+    \label{fig:sq-conv-u}
+\end{figure}
+
+表~\ref{tab:sq-nonuniform} 与图~\ref{fig:sq-conv-nu} 为 $W$ 节点非均布时的同类结果。挠度与转角仍随加密下降，最优比配置的末档为 $10^{-3.61}$ 与 $10^{-3.10}$，比 $1:1:1$ 与 FEM 好1个数量级以上；剪力则不随加密减小，四组都停在 $10^{-0.8}\sim10^{0.2}$ 之间，$1:1:1$ 与 FEM 的末档已为正值。此时最优比在三个场上都最好，但其剪力的误差量级比均布时大出约1个数量级。
+
+\begin{table}[htbp]
+    \centering
+    \caption{$W$ 节点非均布布置时四组算例的相对 $L_2$ 误差（$\log_{10}$）}
+    \label{tab:sq-nonuniform}
+    \includegraphics[width=\textwidth]{figures/tab_nonuniform.png}
+\end{table}
+
+图~\ref{fig:sq-conv-nu} 中挠度与转角的曲线仍随加密下降且与参考斜率大致平行，剪力的四条曲线则不再下降，$1:1:1$ 与 FEM 逐档上翘，DSG3 在三个子图中都位于最高处。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/conv_nonuniform.pdf}
+    \caption{\centering{$W$ 节点非均布布置时四组算例的误差收敛}}
+    \label{fig:sq-conv-nu}
+\end{figure}
+
+可见剪力的精度对 $W$ 节点的分布最为敏感：节点分布无规时其梯度逼近变差，而剪切应变由挠度梯度与转角相减得到，误差会被进一步放大。
 
 \subsection{固支圆板问题}
 
